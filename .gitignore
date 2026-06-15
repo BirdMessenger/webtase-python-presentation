@@ -1,0 +1,17 @@
+# Python caches and environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Compiled C++ files (you only want to upload the .cpp source code)
+comparisons/edist
+comparisons/edist.exe
+*.o
+*.out
+
+# OS generated files
+.DS_Store
+Thumbs.db

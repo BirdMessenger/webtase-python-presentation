@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Python Speed-Up Options</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css" id="theme">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/monokai.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        .reveal { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-size: 32px;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%); 
+        }
+        
+        .reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal p, .reveal ul, .reveal div { 
+            font-family: inherit; 
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 { text-transform: none; font-weight: 700; }
+
+        .text-gradient { background: linear-gradient(90deg, #4B8BBE, #FFE873); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; 
+            padding: 1.5rem; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); 
+        }
+        
+        .reveal pre { 
+            width: 100%; max-width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-radius: 12px; margin: 15px auto; 
+        }
+        
+        .reveal pre code { 
+            max-height: 400px; 
+            font-size: 0.85em; 
+            line-height: 1.4; padding: 1.2rem; 
+            overflow-x: auto; overflow-y: auto; 
+        }
+        
+        /* Highlight Decorators (e.g. @njit) natively in Highlight.js */
+        .reveal pre code .hljs-meta {
+            color: #f97316 !important; /* Tailwind orange-500 */
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(249,115,22,0.5);
+        }
+        
+        .race-track { width: 100%; background: #333; height: 30px; border-radius: 15px; overflow: hidden; margin-bottom: 10px; position: relative;}
+        .car { height: 100%; width: 0%; transition: width 0.1s linear; position: absolute; left: 0;}
+        
+        /* WOW Factor Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes dashFlow { to { stroke-dashoffset: -20; } }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 10px currentColor; } 50% { box-shadow: 0 0 30px currentColor; transform: scale(1.02); } }
+        @keyframes blockSlide { 0% { transform: translateX(-50px); opacity: 0; } 20% { transform: translateX(0); opacity: 1; } 80% { transform: translateX(0); opacity: 1; } 100% { transform: translateX(50px); opacity: 0; } }
+        @keyframes scanline { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+        @keyframes flashSuccess { 0%, 100% { background: rgba(34, 197, 94, 0.1); } 50% { background: rgba(34, 197, 94, 0.5); } }
+        @keyframes beamFire { 0% { width: 0; opacity: 1; } 100% { width: 100%; opacity: 0; } }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes spinStall {
+            0%, 30% { transform: rotate(0deg); }
+            35%, 65% { transform: rotate(180deg); }
+            70%, 100% { transform: rotate(360deg); }
+        }
+        @keyframes lockPulse {
+            0%, 100% { background-color: rgba(127, 29, 29, 0.4); border-color: #b91c1c; } /* Dark Red */
+            50% { background-color: rgba(153, 27, 27, 0.6); border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+        }
+        .animate-spin-stall { animation: spinStall 2.5s cubic-bezier(0.77, 0, 0.175, 1) infinite; }
+        .animate-lock-pulse { animation: lockPulse 1.2s ease-in-out infinite; }
+
+        @keyframes floatUp {
+            0% { bottom: -10%; transform: translateX(0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.5; }
+            80% { opacity: 0.5; }
+            100% { bottom: 110%; transform: translateX(-50px) rotate(180deg); opacity: 0; }
+        }
+        .anim-particle {
+            position: absolute;
+            animation: floatUp linear infinite;
+            z-index: 0;
+        }
+
+        .animate-pop-in {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .path-flow { stroke-dasharray: 10; animation: dashFlow 0.5s linear infinite; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-pulse-glow { animation: pulseGlow 2s infinite; }
+        .animate-block-slide { animation: blockSlide 2s infinite linear; }
+        .hover-scroll::-webkit-scrollbar { width: 6px; }
+        .hover-scroll::-webkit-scrollbar-track { background: transparent; }
+        .hover-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .hover-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.4); }
+        
+        .circuit-bg { background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 20px 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="reveal">
+        <div class="slides">
+            
+            {% include 'slides/_title.html' %}
+            {% include 'slides/0_introduction.html' %}
+            {% include 'slides/1_numpy.html' %}
+            {% include 'slides/2_numba.html' %}
+            {% include 'slides/3_joblib.html' %}
+            {% include 'slides/4_dask.html' %}
+            {% include 'slides/conclusion.html' %}
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/highlight/highlight.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/plugin/math/math.min.js"></script>
+    <script>
+        Reveal.initialize({
+            width: 1280, height: 720, margin: 0.04, minScale: 0.2, maxScale: 2.0,
+            hash: true, slideNumber: 'c/t', transition: 'convex',
+            plugins: [ RevealHighlight, RevealMath.KaTeX ]
+        });
+
+        function resetTP() {
+            // Reset UI Highlights
+            document.getElementById('btn-process').classList.replace('opacity-100', 'opacity-60');
+            document.getElementById('btn-thread').classList.replace('opacity-100', 'opacity-60');
+            document.getElementById('desc-base').classList.replace('opacity-60', 'opacity-100');
+
+            const container = document.getElementById('tp-container');
+            container.innerHTML = `
+                <div class="bg-blue-900/30 border-2 border-blue-500 rounded-xl p-6 flex flex-col items-center shadow-[0_0_20px_rgba(59,130,246,0.3)] w-64 h-72 relative overflow-hidden animate-pop-in">
+                    <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-900/50 px-2 rounded">Process 1</span>
+                    <div class="mt-8 flex flex-col items-center w-full gap-8">
+                        <div class="w-full h-16 border border-purple-500 bg-purple-900/30 rounded flex items-center justify-center relative shadow-inner">
+                            <span class="text-xs text-purple-300 font-mono">Isolated Memory</span>
+                        </div>
+                        <div class="flex gap-4 w-full justify-center">
+                            <div class="w-12 h-12 bg-green-500/20 border-2 border-green-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.5)] relative">
+                                <i class="fa-solid fa-gears text-green-400 text-lg animate-spin"></i>
+                                <span class="absolute -bottom-5 text-[9px] text-green-400 font-bold">Thread 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showProcesses() {
+            // 1. Update UI Highlighting
+            document.getElementById('btn-process').classList.replace('opacity-60', 'opacity-100');
+            document.getElementById('btn-thread').classList.replace('opacity-100', 'opacity-60');
+            document.getElementById('desc-base').classList.replace('opacity-100', 'opacity-60');
+
+            // 2. Clear any active thread-locking animations
+            if (window.gilTimeline) clearInterval(window.gilTimeline);
+
+            const container = document.getElementById('tp-container');
+            
+            // 3. Setup the arena with a wrapper for the processes and a hidden "Add Thread" button
+            container.innerHTML = `
+                <div id="processes-wrapper" class="flex items-center justify-center gap-4 w-full h-full pb-8"></div>
+                
+                <button id="hybrid-btn" onclick="addThreadsToProcesses()" class="absolute bottom-4 bg-green-700 hover:bg-green-600 text-white text-xs font-bold py-2 px-6 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all transform hover:scale-105 opacity-0 pointer-events-none z-20">
+                    <i class="fa-solid fa-plus mr-2"></i> Add Threads to Processes
+                </button>
+            `;
+
+            const wrapper = document.getElementById('processes-wrapper');
+            const hybridBtn = document.getElementById('hybrid-btn');
+
+            // 4. Stagger the creation of processes to show overhead
+            for(let i=1; i<=3; i++) {
+                setTimeout(() => {
+                    wrapper.innerHTML += `
+                        <div class="bg-gray-800 border-2 border-blue-500 rounded-xl p-4 flex flex-col items-center shadow-[0_0_20px_rgba(0,0,0,0.5)] w-48 h-[260px] relative overflow-hidden animate-pop-in">
+                            <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-gray-900 px-2 rounded">Process ${i}</span>
+                            <div class="mt-8 flex flex-col items-center w-full gap-6">
+                                <div class="w-full h-12 border border-purple-500 bg-purple-900/30 rounded flex items-center justify-center relative shadow-inner">
+                                    <span class="text-[10px] text-purple-300 font-mono">Memory Copy ${i}</span>
+                                </div>
+                                
+                                <div id="threads-p${i}" class="flex gap-2 w-full justify-center mt-2 flex-wrap">
+                                    <div class="w-10 h-10 bg-green-900/40 border border-green-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_10px_rgba(34,197,94,0.3)] relative">
+                                        <i class="fa-solid fa-gears text-green-400 text-sm animate-spin"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 5. Reveal the "Add Thread" button once the last process is fully rendered
+                    if(i === 3) {
+                        setTimeout(() => {
+                            hybridBtn.classList.remove('opacity-0', 'pointer-events-none');
+                            hybridBtn.classList.add('animate-pop-in');
+                        }, 400);
+                    }
+                }, i * 200); 
+            }
+        }
+
+        // New function to dynamically inject threads into the active processes
+        function addThreadsToProcesses() {
+            for(let i=1; i<=3; i++) {
+                const threadContainer = document.getElementById(`threads-p${i}`);
+                
+                // Cap at 4 threads per process so they don't break the visual box layout
+                if(threadContainer && threadContainer.children.length < 4) {
+                    
+                    // Randomize the spin direction so it looks like active, chaotic processing
+                    const isReverse = Math.random() > 0.5 ? 'reverse' : 'normal';
+                    
+                    threadContainer.innerHTML += `
+                        <div class="w-10 h-10 bg-green-900/40 border border-green-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_10px_rgba(34,197,94,0.3)] relative animate-pop-in">
+                            <i class="fa-solid fa-gears text-green-400 text-sm animate-spin" style="animation-direction: ${isReverse}"></i>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Optional: Hide the button once max threads (4) are reached to prevent spam
+            const firstThreadContainer = document.getElementById('threads-p1');
+            if (firstThreadContainer && firstThreadContainer.children.length >= 4) {
+                const btn = document.getElementById('hybrid-btn');
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Max Threads Reached';
+                btn.onclick = null;
+            }
+        }
+
+        function showThreads() {
+            document.getElementById('btn-thread').classList.replace('opacity-60', 'opacity-100');
+            document.getElementById('btn-process').classList.replace('opacity-100', 'opacity-60');
+            document.getElementById('desc-base').classList.replace('opacity-100', 'opacity-60');
+
+            const container = document.getElementById('tp-container');
+            
+            // Renders the Dark Theme contested memory block with perfect flex spacing
+            container.innerHTML = `
+                <div class="bg-gray-900/80 border-2 border-blue-500 rounded-xl p-5 flex flex-col items-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] w-full h-[95%] relative overflow-hidden animate-pop-in">
+                    <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-gray-800 px-2 rounded">Single Process</span>
+                    
+                    <div class="mt-6 flex flex-col items-center w-full h-full justify-between pb-2">
+                        
+                        <div class="w-full h-20 border-2 border-red-500 rounded-xl flex flex-col items-center justify-center relative shadow-inner animate-lock-pulse">
+                            <span class="text-sm text-red-400 font-mono font-bold"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Contested Shared Memory</span>
+                            <span class="text-[10px] text-red-300 font-semibold tracking-wide uppercase mt-1" id="memory-state">GIL Active: Thread 1 Locked Cache</span>
+                        </div>
+                        
+                        <div class="w-full flex justify-center gap-12 my-2">
+                            <div class="w-20 flex justify-center">
+                                <i id="arrow-t1" class="fa-solid fa-arrow-up text-green-500 text-2xl transition-all duration-300"></i>
+                            </div>
+                            <div class="w-20 flex justify-center">
+                                <i id="arrow-t2" class="fa-solid fa-hand text-red-500 text-xl transition-all duration-300 animate-bounce"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-12 w-full justify-center">
+                            
+                            <div id="card-t1" class="w-20 h-24 bg-gray-800 border-2 border-green-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300">
+                                <div class="w-10 h-10 bg-green-900/40 border border-green-500 rounded-full flex items-center justify-center shadow-inner" id="bg-t1">
+                                    <i id="icon-t1" class="fa-solid fa-gears text-green-400 text-sm animate-spin"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-green-400 mt-2 text-center" id="label-t1">T1:<br>Active</span>
+                            </div>
+                            
+                            <div id="card-t2" class="w-20 h-24 bg-red-900/20 border-2 border-red-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300 opacity-60">
+                                <div class="w-10 h-10 bg-red-900/40 border border-red-500 rounded-full flex items-center justify-center shadow-inner" id="bg-t2">
+                                    <i id="icon-t2" class="fa-solid fa-hourglass text-red-400 text-sm"></i>
+                                </div>
+                                <span class="text-[10px] font-bold text-red-400 mt-2 text-center" id="label-t2">T2:<br>Waiting</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (window.gilTimeline) clearInterval(window.gilTimeline);
+
+            let state = 0;
+            window.gilTimeline = setInterval(() => {
+                const memState = document.getElementById('memory-state');
+                if (!memState) return; 
+
+                const arrowT1 = document.getElementById('arrow-t1');
+                const arrowT2 = document.getElementById('arrow-t2');
+                const cardT1 = document.getElementById('card-t1');
+                const cardT2 = document.getElementById('card-t2');
+                const iconT1 = document.getElementById('icon-t1');
+                const iconT2 = document.getElementById('icon-t2');
+                const labelT2 = document.getElementById('label-t2');
+                const labelT1 = document.getElementById('label-t1');
+                const bgT1 = document.getElementById('bg-t1');
+                const bgT2 = document.getElementById('bg-t2');
+
+                if (state === 0) {
+                    memState.innerText = "GIL Active: Thread 1 Executing";
+                    
+                    arrowT1.className = "fa-solid fa-arrow-up text-green-500 text-2xl";
+                    arrowT2.className = "fa-solid fa-hand text-red-500 text-xl animate-bounce";
+                    
+                    cardT1.className = "w-20 h-24 bg-gray-800 border-2 border-green-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300";
+                    cardT2.className = "w-20 h-24 bg-red-900/20 border-2 border-red-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300 opacity-60";
+                    
+                    iconT1.className = "fa-solid fa-gears text-green-400 text-sm animate-spin";
+                    iconT2.className = "fa-solid fa-hourglass text-red-400 text-sm";
+                    
+                    labelT1.innerHTML = "T1:<br>Active";
+                    labelT1.className = "text-[10px] font-bold text-green-400 mt-2 text-center";
+                    labelT2.innerHTML = "T2:<br>Waiting";
+                    labelT2.className = "text-[10px] font-bold text-red-400 mt-2 text-center";
+
+                    bgT1.className = "w-10 h-10 bg-green-900/40 border border-green-500 rounded-full flex items-center justify-center shadow-inner"
+                    bgT2.className = "w-10 h-10 bg-red-900/20 border border-green-500 rounded-full flex items-center justify-center shadow-inner"
+                    state = 1;
+                } else {
+                    memState.innerText = "GIL Active: Thread 2 Executing";
+                    
+                    arrowT1.className = "fa-solid fa-hand text-red-500 text-xl animate-bounce";
+                    arrowT2.className = "fa-solid fa-arrow-up text-green-500 text-2xl";
+                    
+                    cardT1.className = "w-20 h-24 bg-red-900/20 border-2 border-red-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300 opacity-60";
+                    cardT2.className = "w-20 h-24 bg-gray-800 border-2 border-green-500 rounded-xl flex flex-col items-center justify-center shadow-lg relative transition-colors duration-300";
+                    
+                    iconT1.className = "fa-solid fa-hourglass text-red-400 text-sm";
+                    iconT2.className = "fa-solid fa-gears text-green-400 text-sm animate-spin-stall";
+                    
+                    labelT1.innerHTML = "T1:<br>Waiting";
+                    labelT1.className = "text-[10px] font-bold text-red-400 mt-2 text-center";
+                    labelT2.innerHTML = "T2:<br>Active";
+                    labelT2.className = "text-[10px] font-bold text-green-400 mt-2 text-center";
+
+                    bgT1.className = "w-10 h-10 bg-red-900/20 border border-green-500 rounded-full flex items-center justify-center shadow-inner"
+                    bgT2.className = "w-10 h-10 bg-green-900/40 border border-green-500 rounded-full flex items-center justify-center shadow-inner"
+
+                    state = 0;
+                }
+            }, 1600);
+        }
+
+        // Make sure your existing resetTP() function clears this clock
+        const originalReset = resetTP;
+        resetTP = function() {
+            if (window.gilTimeline) clearInterval(window.gilTimeline);
+            originalReset();
+        }
+
+        async function runPwDistRace() {
+            // 1. Grab the current value from the UI
+            const sizeInput = document.getElementById('edist-size').value || 2000;
+            
+            const btn = document.getElementById('btn-edist-race');
+            // 2. Update button text to reflect the dynamic size
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Computing N=${sizeInput}...`;
+            
+            ['py', 'cpp'].forEach(id => {
+                document.getElementById(`ed-${id}`).style.width = '0%';
+                document.getElementById(`ed-${id}`).style.transition = 'none';
+                document.getElementById(`time-ed-${id}`).innerText = '--';
+            });
+
+            try {
+                // 3. Append the size as a URL Query Parameter
+                const response = await fetch(`http://localhost:8000/benchmark/edist?size=${sizeInput}`);
+                const data = await response.json();
+                
+                const baseTime = data.py > 0 ? data.py : 1; 
+                
+                ['py', 'cpp'].forEach(id => {
+                    const timeKey = id === 'py' ? 'py' : 'cpp';
+                    const speedMs = (data[timeKey] / baseTime) * 1000; 
+                    
+                    setTimeout(() => {
+                        const el = document.getElementById(`ed-${id}`);
+                        el.style.transition = `width ${speedMs}ms linear`;
+                        el.style.width = '100%';
+                        
+                        setTimeout(() => {
+                            document.getElementById(`time-ed-${id}`).innerText = `${data[timeKey].toFixed(3)}s`;
+                        }, speedMs);
+                    }, 50);
+                });
+                
+                document.getElementById('ratio-ed').textContent = `${data.ratio.toFixed(1)}`;
+                setTimeout(() => {
+                    const popup = document.getElementById('benchmark-conclusion');
+                    if(popup) {
+                        popup.classList.remove('scale-0');
+                        popup.classList.add('scale-100');
+                    }
+                }, 500);
+
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
+            } catch (e) {
+                btn.innerHTML = 'Error connecting to backend';
+            }
+        }
+
+        async function runLiveArrayRace() {
+            const btn = document.getElementById('btn-array-race');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Computing 10M elements...';
+            
+            ['py', 'np'].forEach(id => {
+                document.getElementById(`live-${id}`).style.width = '0%';
+                document.getElementById(`live-${id}`).style.transition = 'none';
+                document.getElementById(`time-live-${id}`).innerText = '';
+            });
+
+            try {
+                const response = await fetch('http://localhost:8000/benchmark/sum');
+                const data = await response.json();
+                
+                const maxTime = 5000;
+                ['py', 'np'].forEach(id => {
+                    const timeKey = id === 'py' ? 'python' : 'numpy';
+                    const speedMs = maxTime * data[timeKey];
+                    
+                    setTimeout(() => {
+                        const el = document.getElementById(`live-${id}`);
+                        el.style.transition = `width ${speedMs}ms linear`;
+                        el.style.width = '100%';
+                        
+                        setTimeout(() => {
+                            document.getElementById(`time-live-${id}`).innerText = `${data[timeKey].toFixed(3)}s`;
+                        }, speedMs);
+                    }, 50);
+                });
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
+            } catch (e) {
+                btn.innerHTML = 'Error connecting to backend';
+            }
+        }
+
+        // Expanded JIT compilation sequence
+        function simulateNumbaJit() {
+            const status = document.getElementById('jit-status');
+            const llvmCore = document.getElementById('llvm-core');
+            const llvmGlow = document.getElementById('llvm-glow');
+            const flow2 = document.getElementById('numba-flow-2');
+            const mcBox = document.getElementById('machine-code-box');
+            const mcIcon = document.getElementById('mc-icon');
+            const warmupBtn = document.getElementById('warmup-btn');
+            const execBtn = document.getElementById('exec-btn');
+            
+            document.getElementById('execution-node').classList.remove('stream-active');
+            document.getElementById('data-stream-container').classList.replace('opacity-100', 'opacity-0');
+            document.getElementById('data-stream-out').classList.replace('opacity-100', 'opacity-0');
+
+            status.innerText = "Intercepting: Compiling bytecode via LLVM... (Slow)";
+            llvmCore.classList.remove('border-yellow-400');
+            llvmCore.classList.add('border-red-500');
+            llvmGlow.classList.replace('bg-yellow-500/40', 'bg-red-500/50');
+            warmupBtn.classList.add('hidden');
+
+            setTimeout(() => {
+                llvmCore.classList.add('border-yellow-400');
+                llvmCore.classList.remove('border-red-500');
+                llvmGlow.classList.replace('bg-red-500/50', 'bg-green-500/40');
+                
+                status.innerHTML = "<span class='text-green-400'>Compilation complete! The code is now hot.</span>";
+                flow2.classList.remove('hidden');
+                
+                mcBox.classList.add('shadow-[0_0_30px_rgba(34,197,94,0.8)]');
+                mcBox.classList.replace('border-green-500', 'border-green-400');
+                mcIcon.classList.replace('text-gray-600', 'text-green-400');
+                
+                execBtn.classList.remove('hidden');
+            }, 2000);
+        }
+
+        function executeNumbaFast() {
+            const status = document.getElementById('jit-status');
+            status.innerHTML = "<span class='text-blue-400'>Executing Compiled Binary! Python is completely bypassed.</span>";
+            
+            // 1. Make the streams visible
+            document.getElementById('data-stream-container').classList.replace('opacity-0', 'opacity-100');
+            document.getElementById('data-stream-out').classList.replace('opacity-0', 'opacity-100');
+            
+            // 2. Add the CSS class to the parent wrapper so the packets animate
+            document.getElementById('execution-node').classList.add('stream-active');
+            
+            setTimeout(() => {
+                document.getElementById('execution-node').classList.remove('stream-active');
+                document.getElementById('data-stream-container').classList.replace('opacity-100', 'opacity-0');
+                document.getElementById('data-stream-out').classList.replace('opacity-100', 'opacity-0');
+                status.innerHTML = "<span class='text-green-400'>Compilation complete! The code is now hot.</span>";
+            }, 1500);
+        }
+
+        async function runMonteCarloRace() {
+            const btn = document.getElementById('btn-mc-race');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Throwing 1M Darts...';
+            
+            ['py', 'nb'].forEach(id => {
+                document.getElementById(`mc-${id}`).style.transition = 'none';
+                document.getElementById(`mc-${id}`).style.width = '0%';
+                document.getElementById(`mc-time-${id}`).innerText = '';
+            });
+
+            const canvas = document.getElementById('mc-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 200; canvas.height = 200;
+            ctx.clearRect(0, 0, 200, 200);
+            
+            let dots = 0;
+            const interval = setInterval(() => {
+                for(let i=0; i<50; i++) {
+                    let x = Math.random() * 200; let y = Math.random() * 200;
+                    ctx.fillStyle = (Math.pow(x-100, 2) + Math.pow(y-100, 2) <= 10000) ? '#3b82f6' : '#ef4444';
+                    ctx.fillRect(x, y, 2, 2);
+                }
+                if(++dots > 40) clearInterval(interval);
+            }, 50);
+
+            try {
+                const response = await fetch('http://localhost:8000/benchmark/montecarlo');
+                const data = await response.json();
+                
+                const maxTime = data.python;
+                ['py', 'nb'].forEach(id => {
+                    const timeKey = id === 'py' ? 'python' : 'numba';
+                    const speedMs = (data[timeKey] / maxTime) * 3000;
+                    
+                    setTimeout(() => {
+                        const el = document.getElementById(`mc-${id}`);
+                        el.style.transition = `width ${speedMs}ms linear`;
+                        el.style.width = '100%';
+                        setTimeout(() => {
+                            document.getElementById(`mc-time-${id}`).innerText = `${data[timeKey].toFixed(3)}s`;
+                        }, speedMs);
+                    }, 50);
+                });
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
+            } catch (e) {
+                btn.innerHTML = 'Error connecting to backend';
+            }
+        }
+
+        // Fixed Task Generation (Added explicit height class h-6)
+        function generateTasks() {
+            const queue = document.getElementById('task-queue');
+            if(!queue) return;
+            queue.innerHTML = '';
+            for(let i=0; i<32; i++) {
+                queue.innerHTML += `<div id="task-${i}" class="h-6 bg-cyan-900 border border-cyan-800 rounded"></div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', generateTasks);
+
+        async function runJoblibSim(cores) {
+            generateTasks();
+            const timer = document.getElementById('joblib-timer');
+            let ms = 0;
+            
+            for(let i=1; i<=4; i++) {
+                const core = document.getElementById(`core-${i}`);
+                if (i <= cores) {
+                    core.classList.replace('border-gray-700', 'border-cyan-400');
+                    core.classList.replace('text-gray-500', 'text-cyan-300');
+                    core.classList.add('bg-cyan-900/30', 'shadow-[0_0_15px_rgba(6,182,212,0.4)]');
+                } else {
+                    core.className = "p-2 rounded border border-gray-700 text-gray-500 text-xs w-16 transition-colors";
+                }
+            }
+
+            const interval = setInterval(() => {
+                ms += 100;
+                timer.innerText = (ms / 1000).toFixed(1) + 's';
+            }, 100);
+
+            for(let i=0; i<32; i += cores) {
+                await new Promise(r => setTimeout(r, 150)); 
+                for(let c=0; c<cores; c++) {
+                    if (i+c < 32) {
+                        const t = document.getElementById(`task-${i+c}`);
+                        t.classList.replace('bg-cyan-900', 'bg-green-500');
+                        t.classList.replace('border-cyan-800', 'border-green-400');
+                        t.classList.add('shadow-[0_0_10px_#22c55e]');
+                    }
+                }
+            }
+            clearInterval(interval);
+            
+            setTimeout(() => {
+                for(let i=1; i<=4; i++) {
+                    document.getElementById(`core-${i}`).className = "p-2 rounded border border-gray-700 text-gray-500 text-xs w-16 transition-colors";
+                }
+            }, 500);
+        }
+
+        let photonAnimId;
+        function runPhotons(mode) {
+            cancelAnimationFrame(photonAnimId);
+            const cvs = document.getElementById('photon-canvas');
+            const ctx = cvs.getContext('2d');
+            
+            let p1 = {x: 150, y: 100, vx: 3, vy: 2, active: true, color: '#ef4444', bounces: 0};
+            let p2 = {x: 150, y: 100, vx: -2.5, vy: -3, active: mode==='par', color: '#22c55e', bounces: 0};
+            
+            ctx.clearRect(0,0,300,200);
+
+            function draw() {
+                ctx.fillStyle = 'rgba(17, 24, 39, 0.2)';
+                ctx.fillRect(0,0,300,200);
+
+                [p1, p2].forEach(p => {
+                    if(!p.active) return;
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 5 || p.x > 295) { p.vx *= -1; p.bounces++; }
+                    if(p.y < 5 || p.y > 195) { p.vy *= -1; p.bounces++; }
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.color;
+                });
+                
+                if(mode === 'seq' && p1.bounces > 4 && !p2.active && p1.active) {
+                    p1.active = false; 
+                    p2.active = true;  
+                }
+                
+                if((mode === 'par' && p1.bounces > 4 && p2.bounces > 4) || (mode === 'seq' && p2.bounces > 4)) {
+                } else {
+                    photonAnimId = requestAnimationFrame(draw);
+                }
+            }
+            draw();
+        }
+
+        function initDaskSim() {
+            const disk = document.getElementById('disk-chunks');
+            if(!disk) return;
+            disk.innerHTML = '';
+            for(let i=0; i<20; i++) {
+                disk.innerHTML += `<div id="chunk-${i}" class="h-8 bg-blue-800 border border-blue-600 rounded shadow-md flex items-center justify-center text-[10px] font-bold text-blue-200 transition-all duration-300">C</div>`;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', initDaskSim);
+
+        async function runDaskCompute() {
+            initDaskSim();
+            const btn = document.getElementById('dask-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Streaming Chunks...';
+
+            const ramFill = document.getElementById('ram-fill');
+            
+            for(let i=0; i<20; i++) {
+                const chunk = document.getElementById(`chunk-${i}`);
+                chunk.classList.replace('bg-blue-800', 'bg-gray-800');
+                chunk.classList.replace('border-blue-600', 'border-gray-700');
+                chunk.classList.remove('shadow-md');
+                chunk.innerText = '';
+
+                ramFill.style.width = '5%';
+                await new Promise(r => setTimeout(r, 100)); 
+                ramFill.style.width = '0%';
+                await new Promise(r => setTimeout(r, 50));
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Done! RAM peaked at 5%';
+            btn.classList.replace('bg-purple-600', 'bg-green-600');
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-play mr-2"></i> Execute .compute() Stream';
+                btn.classList.replace('bg-green-600', 'bg-purple-600');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

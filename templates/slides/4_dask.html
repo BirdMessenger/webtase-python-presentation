@@ -1,0 +1,197 @@
+<section>
+    <h2 class="text-gradient mb-4"><i class="fa-solid fa-triangle-exclamation text-8xl text-red-500 mb-4 block"></i>A Last General Limit</h2>
+    <p class="text-xl text-gray-300 mb-8">What happens when your dataset size exceeds your System RAM?</p>
+    
+    <div class="glass-panel text-center relative overflow-hidden bg-red-900/20 border-red-800">
+        <pre class="!bg-black/80 !border !border-red-500 !shadow-[0_0_30px_rgba(239,68,68,0.3)] !m-0"><code class="python text-red-400" data-trim>
+Traceback (most recent call last):
+    File "data_pipeline.py", line 42, in &ltmodule&gt
+        dataset = np.zeros((1000000, 1000000))
+numpy.core._exceptions._ArrayMemoryError: 
+Unable to allocate 7.45 TiB for an array with shape (1000000, 1000000)...</code></pre>
+        
+        <div class="flex justify-around items-center mt-6 text-red-400 font-bold">
+            <p><i class="fa-solid fa-memory text-4xl mb-2"></i> RAM: 100% Full (System Crash)</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>4. Out-of-Core Computations</h2>
+    <p class="text-xl text-gray-300 mb-8">Processing massive datasets gracefully without crashing.</p>
+</section>
+
+<section>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>Principle</h2>
+    
+    <div class="flex gap-6 items-stretch">
+        <div class="w-1/2 flex flex-col justify-between">
+            <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-red-500 hover:scale-105 transition-transform" data-fragment-index="1">
+                <h4 class="text-red-400 font-bold mb-2 text-lg"><i class="fa-solid fa-shield-halved mr-2"></i>1. Memory Wall</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">Native tools would try to allocate/load memory that does not fit in the RAM resulting in a crash.</p>
+            </div>
+            <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-blue-500 hover:scale-105 transition-transform" data-fragment-index="2">
+                <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-solid fa-map mr-2"></i>2. Task Graphs</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">The Engine doesn't load data, it uses a <b>Scheduler</b> to map out operations as a graph of instructions (this is called lazy evaluation).</p>
+            </div>
+            <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-purple-500 hover:scale-105 transition-transform" data-fragment-index="2">
+                <h4 class="text-purple-400 font-bold mb-2 text-lg"><i class="fa-solid fa-water mr-2"></i>3. Streaming</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">Upon receiving a triggering signal the data is streamed in tiny chunks from Disk to RAM, saving only the intermediate outputs.</p>
+            </div>
+        </div>
+
+        <div class="fragment w-1/2 glass-panel relative overflow-hidden flex flex-col justify-center p-8 circuit-bg" data-fragment-index="1">
+            <div class="fragment flex justify-between items-center w-full h-40 relative px-4 z-10" data-fragment-index="1">
+                
+                <div class="fragment w-28 h-32 bg-gray-900 border-2 border-gray-600 rounded-lg flex flex-col relative shadow-[0_0_20px_rgba(0,0,0,0.8)] z-10" data-fragment-index="1">
+                    <div class="bg-gray-700 text-[10px] font-bold text-center py-1 border-b border-gray-500 uppercase tracking-widest">100GB Dataset</div>
+                    <div class="flex-1 p-2 grid grid-cols-2 gap-1 overflow-hidden relative" id="ooc-disk">
+                        <div class="bg-blue-800 rounded opacity-50"></div><div class="bg-blue-800 rounded opacity-50"></div>
+                        <div class="bg-blue-800 rounded opacity-50"></div><div class="bg-blue-800 rounded opacity-50"></div>
+                    </div>
+                </div>
+
+                <div class="fragment absolute left-[8rem] right-[8rem] h-2 bg-gray-800 rounded-full top-1/2 -translate-y-1/2 overflow-hidden border border-gray-700" data-fragment-index="2"></div>
+
+                <div class="fragment absolute left-28 w-12 h-8 bg-blue-500 rounded border border-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.8)] flex items-center justify-center text-[10px] font-bold text-white z-20" style="animation: chunkStream 3s infinite linear;" data-fragment-index="2">100MB</div>
+
+                <div class="fragment w-16 h-20 bg-gray-900 border-2 border-purple-500 rounded-lg flex flex-col relative z-10 shadow-[0_0_20px_rgba(168,85,247,0.3)] mx-12" data-fragment-index="2">
+                    <div class="bg-purple-900 text-[9px] font-bold text-center py-1 border-b border-purple-500">8GB RAM</div>
+                    <div class="flex-1 p-1 flex flex-col justify-end border-4 border-dashed border-gray-700 m-1 rounded relative overflow-hidden">
+                        <div class="w-full bg-green-500 absolute bottom-0 left-0 right-0" style="height: 0%; animation: ramSpike 3s infinite linear;"></div>
+                    </div>
+                </div>
+
+                <div class="fragment w-28 h-28 bg-gray-900 border-2 border-green-500 rounded-full flex flex-col items-center justify-center relative z-10 shadow-[0_0_30px_rgba(34,197,94,0.3)] animate-pulse-glow" data-fragment-index="2">
+                    <i class="fa-solid fa-microchip text-4xl text-green-400 mb-1"></i>
+                    <div class="text-[10px] font-bold text-gray-300">Compute</div>
+                </div>
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent pointer-events-none" style="height: 2px; animation: scanline 4s infinite linear;"></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes chunkStream {
+        0% { left: 110px; opacity: 0; transform: scale(0.5); }
+        10% { opacity: 1; transform: scale(1); }
+        40% { left: 240px; transform: scale(1); opacity: 1; } /* Enters RAM */
+        50% { left: 240px; transform: scale(0); opacity: 0; } /* Computes */
+        100% { left: 240px; opacity: 0; }
+    }
+    @keyframes ramSpike {
+        0%, 39% { height: 0%; background: #22c55e;}
+        40% { height: 20%; background: #22c55e; } /* Spike */
+        45% { height: 20%; background: #eab308; } /* Processing */
+        50%, 100% { height: 0%; background: #22c55e; } /* Cleared */
+    }
+</style>
+
+<section>
+    <div class="glass-panel flex flex-col items-center mt-6">
+        <div class="w-full flex items-end gap-6 mb-6">
+            <div class="w-1/4 text-right font-bold text-gray-400 text-sm border-r border-gray-600 pr-4">
+                RAM Limits<br>
+                <span class="text-xs font-normal text-purple-400">Cap: 8GB</span>
+            </div>
+            <div class="w-3/4 h-8 bg-gray-800 rounded-lg border-2 border-purple-900 relative overflow-hidden shadow-inner flex">
+                <div id="ram-fill" class="h-full bg-green-500 transition-all duration-100 w-0 shadow-[0_0_15px_#22c55e]"></div>
+            </div>
+        </div>
+
+        <div class="w-full bg-gray-900 border border-gray-700 p-4 rounded-xl relative shadow-lg">
+            <div class="absolute -top-3 left-4 bg-gray-900 px-2 text-xs font-bold text-blue-400 border border-gray-700 rounded">100GB Disk Chunks</div>
+            <div class="grid grid-cols-10 gap-2" id="disk-chunks"></div>
+        </div>
+
+        <button onclick="runDaskCompute()" id="dask-btn" class="mt-6 w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-full shadow-[0_0_20px_rgba(147,51,234,0.4)] transition transform hover:scale-105">
+            <i class="fa-solid fa-play mr-2"></i> Execute .compute() Stream
+        </button>
+    </div>
+</section>
+
+
+<section class="text-center" data-transition="zoom">
+    <div class="flex justify-center w-full mb-6">
+        <img src="./logos/dask.png" alt="Dask" class="h-40 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] m-0">
+    </div>
+    <h2 class="text-7xl font-bold text-white">Dask</h2>
+    <p class="text-purple-400 text-xl mt-4">Scalable analytics in Python</p>
+</section>
+
+<section data-auto-animate>
+    <h2><i class="fa-solid fa-database text-purple-400 mr-3"></i>The Scale-Out Tool: Dask</h2>
+    <div class="flex gap-6">
+        <div class="w-1/2 glass-panel text-left border-t-4 border-red-500">
+            <h4 class="text-red-400 mb-2 font-bold"><i class="fa-solid fa-xmark mr-2"></i>NumPy (Crash)</h4>
+            <pre data-id="daskcode"><code class="python text-sm" data-trim>
+import numpy as np
+
+# Tries to load 100GB into RAM immediately.
+# Result: Immediate MemoryError Crash.
+x = np.random.random((100000, 100000))
+result = x.mean()
+            </code></pre>
+        </div>
+        <div class="w-1/2 glass-panel text-left border-t-4 border-green-500">
+            <h4 class="text-green-400 mb-2 font-bold"><i class="fa-solid fa-check mr-2"></i>Dask (Lazy)</h4>
+            <pre data-id="daskcode-after"><code class="python text-sm" data-trim>
+import dask.array as da
+
+# Lazily registers 100GB of data via chunks.
+# Result: 0 bytes loaded into RAM.
+x = da.random.random((100000, 100000), chunks=(1000, 1000))
+result = x.mean().compute() # triggers computation
+            </code></pre>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2><i class="fa-solid fa-server text-blue-400 mr-3"></i>More advanced things</h2>
+    <p class="text-lg text-left text-gray-300 mb-6">Dask doesn't just stream chunks sequentially—it can process them in parallel.</p>
+    
+    <div class="glass-panel text-left border-l-4 border-blue-500 mb-6">
+        <pre><code class="python text-sm" data-trim data-noescape>
+from dask.distributed import Client, LocalCluster
+
+# Spawns a background cluster using all your CPU cores & memory limits
+cluster = LocalCluster(n_workers=4, threads_per_worker=2, memory_limit='2GB')
+client = Client(cluster)
+
+# Now, any Dask operation will be automatically distributed
+# across the 4 workers, processing 4 chunks simultaneously!
+result = x.mean().compute()
+        </code></pre>
+    </div>
+    
+    <div class="flex items-center justify-center gap-8 mt-8">
+        <div class="text-center text-gray-400">
+            <i class="fa-solid fa-laptop text-5xl text-gray-500 mb-2 block"></i>
+            <span class="text-sm">Local Machine</span>
+        </div>
+        <i class="fa-solid fa-arrow-right text-3xl text-blue-400"></i>
+        <div class="flex gap-4">
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <i class="fa-solid fa-microchip text-blue-400 text-2xl"></i><br><span class="text-xs">Worker 1</span>
+            </div>
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <i class="fa-solid fa-microchip text-blue-400 text-2xl"></i><br><span class="text-xs">Worker 2</span>
+            </div>
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <i class="fa-solid fa-microchip text-blue-400 text-2xl"></i><br><span class="text-xs">Worker 3</span>
+            </div>
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <i class="fa-solid fa-microchip text-blue-400 text-2xl"></i><br><span class="text-xs">Worker 4</span>
+            </div>
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <span class="text-xs">.....</span>
+            </div>
+            <div class="bg-gray-800 p-4 rounded border border-blue-500 text-center shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <i class="fa-solid fa-microchip text-blue-400 text-2xl"></i><br><span class="text-xs">Worker N</span>
+            </div>
+        </div>
+    </div>
+</section>

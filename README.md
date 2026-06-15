@@ -8,39 +8,36 @@ This project is a modular, interactive presentation built with Reveal.js and Fas
 - **Frontend:** Reveal.js (the slide engine) with Tailwind CSS for styling.
 - **Templating:** Jinja2 (allows for modular slide management).
 
-## Folder Structure
-
-.
-├── backend.py            # FastAPI server and benchmark endpoints
-├── templates/
-│   ├── index.html        # Master layout
-│   └── slides/           # Individual slide files (.html)
-├── comparisons/          # C++ and Python benchmark source code
-├── logos/                # Presentation assets
-└── .gitignore            # Excludes caches and compiled binaries
-
-## Setup & Installation
 ## Setup & Installation
 
 ### 1. Clone the repository
-git clone git@github.com:YOUR_USERNAME/YOUR_REPO_NAME.git
-cd YOUR_REPO_NAME
+```bash
+git clone https://github.com/BirdMessenger/webtase-python-presentation.git
+cd webtase-python-presentatio
+```
 
 ### 2. Create and activate a virtual environment
-# Using venv
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
 ### 3. Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
 ### 4. Compile the C++ Benchmark
 Before starting the server, ensure the C++ backend is compiled:
+```bash
 g++ comparisons/edist.cpp -o comparisons/edist
+```
 
 ### 5. Running the Presentation
 Start the FastAPI server:
+```python
 uvicorn backend:app --reload
+```
 
 Once running, open your browser and navigate to:
 http://127.0.0.1:8000/

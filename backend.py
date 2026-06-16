@@ -69,7 +69,7 @@ def benchmark_sum(size: int = 10_000_000):
     numba_log(data_arr)
     t_nb = time.time() - t0
     
-    return {"python": t_py, "numpy": t_np, "numba": t_nb, "size": size}
+    return {"python": t_py, "numpy": t_np, "numba": t_nb, "size": size, "ratio": t_py/t_np}
 
 @app.get("/benchmark/montecarlo")
 def benchmark_montecarlo(n: int = 1_000_000):
@@ -126,6 +126,66 @@ def benchmark_edist(size: int = 2000):
     durations['ratio'] = ratio
 
     return durations
+
+
+def mandelbrot_np(c, max_iter):
+    output = np.zeros(c.shape, dtype=int)
+    z = np.zeros_like(c)
+    mask = np.ones(c.shape, dtype=bool)
+
+    for i in range(max_iter):
+        z[mask] = z[mask]**2 + c[mask]
+        escaped = np.abs(z) > 2.0
+        
+        # Update output for newly escaped pixels
+        new_escaped = escaped & mask
+        output[new_escaped] = i
+        mask[new_escaped] = False 
+        
+    output[mask] = max_iter
+    return output
+
+
+@njit(fastmath=True)
+def mandelbrot_nb(c, max_iter):
+    rows, cols = c.shape
+    output = np.zeros(c.shape, dtype=np.int32)
+    
+    for i in range(rows):
+        for j in range(cols):
+            z = 0.0j
+            c_val = c[i, j]
+            for k in range(max_iter):
+                z = z*z + c_val
+                # Early stop! This is what makes Numba so much faster here.
+                if z.real**2 + z.imag**2 > 4.0: 
+                    output[i, j] = k
+                    break
+            else:
+                output[i, j] = max_iter
+                
+    return output
+
+
+@app.get("/benchmark/heateq")
+def benchmark_mandelbrot(size: int = 1500, max_iter: int = 200):
+    # Setup the complex plane grid
+    y, x = np.ogrid[-1.4:1.4:size*1j, -2.0:0.8:size*1j]
+    c = x + y*1j
+
+    # NumPy
+    t0 = time.time()
+    mandelbrot_np(c, max_iter)
+    t_np = time.time() - t0
+
+    # Numba
+    mandelbrot_nb(c[:10, :10], max_iter) # Warm-up compilation
+    
+    t0 = time.time()
+    mandelbrot_nb(c, max_iter)
+    t_nb = time.time() - t0
+
+    return {"numpy": t_np, "numba": t_nb, "size": size, "max_iter": max_iter, "ratio": t_np/t_nb}
 
 
 if __name__ == "__main__":

@@ -1,23 +1,23 @@
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-network-wired mr-3"></i>2. Parallelization</h2>
-    <p class="text-xl text-gray-300 mb-8">Leveraging the full potential of your hardware cores.</p>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-network-wired mr-3"></i>3. Parallelization</h2>
+    <p class="text-xl text-gray-300 mb-8">Leveraging the potential of your hardware.</p>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-network-wired mr-3"></i>How Multi-Core Dispatching Works</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-network-wired mr-3"></i>Principle</h2>
     <div class="flex gap-6 items-stretch">
         <div class="w-1/2 flex flex-col justify-between">
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-cyan-500 hover:scale-105 transition-transform" data-fragment-index="1">
                 <h4 class="text-cyan-400 font-bold mb-2 text-lg"><i class="fa-solid fa-list mr-2"></i>1. Task Queue</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>Independent Tasks.</strong> Perfect for "embarrassingly parallel" workloads (e.g., thousands of files).</p>
+                <p class="text-[14px] text-gray-400 leading-tight">An embarrassingly parallel workload (e.g., thousands of files).</p>
             </div>
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-purple-500 hover:scale-105 transition-transform" data-fragment-index="2">
                 <h4 class="text-purple-400 font-bold mb-2 text-lg"><i class="fa-solid fa-code-branch mr-2"></i>2. Dispatcher</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>Independent Workers.</strong> Spawns isolated background Python processes.</p>
+                <p class="text-[14px] text-gray-400 leading-tight">Spawns completely separate background Python processes.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-green-500 hover:scale-105 transition-transform" data-fragment-index="3">
-                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-microchip mr-2"></i>3. Multi-Core Execution</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>True Parallelism.</strong> The OS distributes the workers concurrently across all physical CPU cores.</p>
+                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-microchip mr-2"></i>3. Multi-Core</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">OS distributes processes across CPU cores concurrently.</p>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
 </section>
 
 <section data-auto-animate>
-    <h2><i class="fa-solid fa-code-compare text-cyan-400 mr-3"></i>Sequential vs. Parallel Execution</h2>
+    <h2><i class="fa-solid fa-network-wired text-cyan-400 mr-3"></i>The Distributor: Joblib</h2>
     <p class="text-lg text-left text-gray-300 mb-4">Easily convert list comprehensions into parallel processes.</p>
     
     <div class="flex gap-6 items-stretch">
@@ -181,7 +181,7 @@ energies = Parallel(n_jobs=2)(
 </section>
 
 <section>
-    <h2><i class="fa-solid fa-server text-purple-400 mr-3"></i>Execution Backends: Processes vs. Threads</h2>
+    <h2><i class="fa-solid fa-gears text-purple-400 mr-3"></i>Joblib: Execution Backends</h2>
     <p class="text-lg text-left text-gray-300 mb-6">Joblib allows you to swap out the execution backend instantly.</p>
     <div class="grid grid-cols-2 gap-6 text-left">
         <div class="glass-panel border-t-4 border-cyan-500 hover:bg-cyan-900/10 transition-colors">
@@ -191,8 +191,8 @@ Parallel(n_jobs=-1, backend="loky")(
     delayed(func)(x) for x in data
 )
             </code></pre>
-            <p class="text-[13px] text-gray-400 mb-4 h-12">Bypasses the GIL by spawning <strong>isolated processes</strong>. Has memory overhead.</p>
-            <p class="text-[14px] bg-gray-900 p-3 rounded-lg text-green-300 border border-green-900 font-bold"><i class="fa-solid fa-check mr-2"></i>Best for: Heavy CPU math, pure Python logic.</p>
+            <p class="text-sm text-gray-400 mb-4 h-16">Bypasses the <b>GIL</b> by spawning entirely new isolated Python <b>processes</b> (memory overhead).</p>
+            <p class="text-base bg-gray-900 p-3 rounded-lg text-green-300 border border-green-900 font-bold"><i class="fa-solid fa-check mr-2"></i>Best for: Heavy CPU math, NumPy processing.</p>
         </div>
         <div class="glass-panel border-t-4 border-orange-500 hover:bg-orange-900/10 transition-colors">
             <h4 class="text-orange-400 font-bold mb-2 text-xl"><code>backend="threading"</code></h4>
@@ -201,50 +201,35 @@ Parallel(n_jobs=4, backend="threading")(
     delayed(download)(url) for url in urls
 )
             </code></pre>
-            <p class="text-[13px] text-gray-400 mb-4 h-12">Uses <strong>shared-memory threads</strong>. Extremely fast to spawn, but bound by the GIL.</p>
-            <p class="text-[14px] bg-gray-900 p-3 rounded-lg text-green-300 border border-green-900 font-bold"><i class="fa-solid fa-check mr-2"></i>Best for: Network I/O, API calls, file downloading.</p>
+            <p class="text-sm text-gray-400 mb-4 h-16">Uses <b>threads</b> within the <u>same process</u> (Subject to the GIL).</p>
+            <p class="text-base bg-gray-900 p-3 rounded-lg text-green-300 border border-green-900 font-bold"><i class="fa-solid fa-check mr-2"></i>Best for: Network I/O, downloading files, Web APIs.</p>
         </div>
     </div>
 </section>
 
 <section>
-    <h2><i class="fa-solid fa-chart-line text-blue-500 mr-3"></i>Theoretical Limit: Amdahl's Law</h2>
-    <div class="flex flex-col items-center mt-8">
-        <div class="glass-panel text-left border-t-4 border-blue-500 max-w-4xl w-full p-8">
-            <p class="text-lg text-gray-300 mb-6 text-center">Your maximum speedup is strictly bottlenecked by the portion of the task that <em>cannot</em> be parallelized (the sequential fraction $p$).</p>
-            
-            <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 text-center mb-6 text-3xl shadow-inner">
-                $$ S(n) = \frac{1}{(1-p) + \frac{p}{n}} $$
+<h2><i class="fa-solid fa-traffic-light text-red-500 mr-3"></i>Limits of Parallelization</h2>
+<div class="grid grid-cols-2 gap-6 mt-8 items-center">
+    <div class="glass-panel text-left border-t-4 border-blue-500">
+        <div>
+            <h4 class="text-blue-400 font-bold mb-4">Amdahl's Law</h4>
+            <p class="text-[15px] text-gray-300 mb-4">Theoretical speedup is strictly limited by the portion of the task that <em>cannot</em> be parallelized (the sequential fraction $p$).</p>
+            <div class="bg-gray-900 p-4 rounded border border-gray-700 text-center mb-4">
+                $$S(n) = \frac{1}{(1-p) + \frac{p}{n}}$$
             </div>
-            
-            <div class="text-center text-[15px] text-gray-400 bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
-                <i class="fa-solid fa-circle-info text-blue-400 mr-2"></i> Even with infinite CPU cores ($n \to \infty$), the speedup hits a hard ceiling at $S_{max} = \frac{1}{1-p}$.
-            </div>
-
+            <p class="text-xs text-gray-400 italic">Adding infinite cores ($n \to \infty$) only yields $S_{max} = \frac{1}{1-p}$.</p>
         </div>
-        <div class="absolute bottom-0 right-48 text-[9px] text-right text-gray-400 p-4">M. D. Hill and M. R. Marty, "Amdahl's Law in the Multicore Era," in Computer, vol. 41, no. 7, pp. 33-38, July 2008</div>
     </div>
-</section>
-
-<section>
-    <h2><i class="fa-solid fa-traffic-light text-red-500 mr-3"></i>Practical Python Limits</h2>
-    <p class="text-lg text-center text-gray-300 mb-8">Parallelism isn't free. Creating and talking to new processes is expensive.</p>
     
-    <div class="flex flex-col gap-6 w-full max-w-5xl mx-auto">
-        <div class="glass-panel text-left border-l-4 border-yellow-500 p-6 flex items-start gap-4">
-            <i class="fa-solid fa-truck-fast text-4xl text-yellow-500 mt-2"></i>
-            <div>
-                <h5 class="text-yellow-400 font-bold text-xl mb-2">IPC (Inter-Process Communication) Overhead</h5>
-                <p class="text-[15px] text-gray-300 m-0">Dispatching tasks takes time. If your function executes in 0.001s, sending it to a separate process costs more time than just computing it directly.</p>
-            </div>
+    <div class="flex flex-col gap-6">
+        <div class="glass-panel text-left border-l-4 border-yellow-500 p-4">
+            <h5 class="text-yellow-400 font-bold text-lg mb-2"><i class="fa-solid fa-truck-fast mr-2"></i>IPC Overhead</h5>
+            <p class="text-sm text-gray-300">Inter-Process Communication isn't free. Dispatching tiny tasks to isolated processes costs more time than computing them directly.</p>
         </div>
-        
-        <div class="glass-panel text-left border-l-4 border-red-500 p-6 flex items-start gap-4">
-            <i class="fa-solid fa-box-open text-4xl text-red-500 mt-2"></i>
-            <div>
-                <h5 class="text-red-400 font-bold text-xl mb-2">The Pickle Penalty</h5>
-                <p class="text-[15px] text-gray-300 m-0">Processes do not share memory. To pass a large dataset to a worker, Python must serialize it to bytes (<code class="text-red-300 bg-black/50 px-1 rounded">pickle</code>) and deserialize it. Large objects cause severe data-transfer bottlenecks.</p>
-            </div>
+        <div class="glass-panel text-left border-l-4 border-red-500 p-4">
+            <h5 class="text-red-400 font-bold text-lg mb-2"><i class="fa-solid fa-box-open mr-2"></i>The Pickle Penalty</h5>
+            <p class="text-sm text-gray-300">To pass data to a new process, Python must serialize it (Pickle) and deserialize it. Large complex objects severely bottleneck data transfer.</p>
         </div>
     </div>
+</div>
 </section>

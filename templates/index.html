@@ -90,6 +90,13 @@
             80% { opacity: 0.5; }
             100% { bottom: 110%; transform: translateX(-50px) rotate(180deg); opacity: 0; }
         }
+        @keyframes dataBusStream {
+            0% { left: 0%; opacity: 0; transform: scale(0.5); }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; transform: scale(1); }
+            100% { left: 90%; opacity: 0; transform: scale(0.5); }
+        }
+
         .anim-particle {
             position: absolute;
             animation: floatUp linear infinite;
@@ -402,7 +409,7 @@
                 
                 document.getElementById('ratio-ed').textContent = `${data.ratio.toFixed(1)}`;
                 setTimeout(() => {
-                    const popup = document.getElementById('benchmark-conclusion');
+                    const popup = document.getElementById('benchmark-conclusion-ed');
                     if(popup) {
                         popup.classList.remove('scale-0');
                         popup.classList.add('scale-100');
@@ -444,6 +451,15 @@
                         }, speedMs);
                     }, 50);
                 });
+                document.getElementById('ratio-live').textContent = `${data.ratio.toFixed(1)}`;
+                setTimeout(() => {
+                    const popup = document.getElementById('benchmark-conclusion-live');
+                    if(popup) {
+                        popup.classList.remove('scale-0');
+                        popup.classList.add('scale-100');
+                    }
+                }, 500);
+
                 btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
             } catch (e) {
                 btn.innerHTML = 'Error connecting to backend';
@@ -552,6 +568,57 @@
                 btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
             } catch (e) {
                 btn.innerHTML = 'Error connecting to backend';
+            }
+        }
+
+        async function runHeatEqRace() {
+            const btn = document.getElementById('btn-heateq-race');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Computing 1500 elements...`;
+            
+            // 1. Reset cars and times
+            ['np', 'nb'].forEach(id => {
+                document.getElementById(`heq-${id}`).style.width = '0%';
+                document.getElementById(`heq-${id}`).style.transition = 'none';
+                document.getElementById(`time-heq-${id}`).innerText = '--';
+            });
+
+            try {
+                // 2. Fetch from the new endpoint
+                const response = await fetch('http://localhost:8000/benchmark/heateq');
+                const data = await response.json();
+                
+                // 3. Normalize times for the animation (using numpy as the slow baseline)
+                const baseTime = data.numpy > 0 ? data.numpy : 1; 
+                
+                ['np', 'nb'].forEach(id => {
+                    const timeKey = id === 'np' ? 'numpy' : 'numba';
+                    // Scale the animation so the slowest takes ~2 seconds
+                    const speedMs = (data[timeKey] / baseTime) * 2000; 
+                    
+                    setTimeout(() => {
+                        const el = document.getElementById(`heq-${id}`);
+                        el.style.transition = `width ${speedMs}ms linear`;
+                        el.style.width = '100%';
+                        
+                        setTimeout(() => {
+                            document.getElementById(`time-heq-${id}`).innerText = `${data[timeKey].toFixed(3)}s`;
+                        }, speedMs);
+                    }, 50);
+                });
+
+                document.getElementById('ratio-heq').textContent = `${data.ratio.toFixed(1)}`;
+                setTimeout(() => {
+                    const popup = document.getElementById('benchmark-conclusion-heq');
+                    if(popup) {
+                        popup.classList.remove('scale-0');
+                        popup.classList.add('scale-100');
+                    }
+                }, 500);
+
+                btn.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> Run Again';
+            } catch (e) {
+                btn.innerHTML = 'Error connecting to backend';
+                console.error(e);
             }
         }
 

@@ -1,25 +1,25 @@
-<section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bolt mr-3"></i>1. Just-In-Time (JIT) Compilation</h2>
-    <p class="text-xl text-gray-300 mb-8">Bridging the gap between interpreted flexibility and compiled speed.</p>
+ <section>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bolt mr-3"></i>2. JIT Compilation</h2>
+    <p class="text-xl text-gray-300 mb-8">Bridging the gap between Interpreted flexibility and Compiled speed.</p>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-gears mr-3"></i>How JIT Compilation Works</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bolt mr-3"></i>Principle</h2>
     
     <div class="flex gap-6 items-stretch">
         
         <div class="w-1/2 flex flex-col justify-between">
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-blue-500 hover:scale-105 transition-transform" data-fragment-index="1">
-                <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-brands fa-python mr-2"></i>1. The Flag</h4>
-                <p class="text-[14px] text-gray-400 leading-tight">Write standard Python, but add the <strong><code class="bg-black px-1 rounded">@njit</code></strong> decorator.</p>
+                <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-brands fa-python mr-2"></i>1. The Code</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">You write standard Python code and flag it for acceleration.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-yellow-500 hover:scale-105 transition-transform" data-fragment-index="2">
-                <h4 class="text-yellow-400 font-bold mb-2 text-lg"><i class="fa-solid fa-satellite-dish mr-2"></i>2. The Compiler</h4>
-                <p class="text-[14px] text-gray-400 leading-tight">At runtime, the <strong>LLVM framework</strong> intercepts the bytecode and translates it.</p>
+                <h4 class="text-yellow-400 font-bold mb-2 text-lg"><i class="fa-solid fa-satellite-dish mr-2"></i>2. The Interceptor</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">At runtime, a Just-In-Time (JIT) interceptor feeds the bytecode to a powerful <strong>Compiler Infrastructure</strong>.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-green-500 hover:scale-105 transition-transform" data-fragment-index="3">
-                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-gauge-high mr-2"></i>3. The Execution</h4>
-                <p class="text-[14px] text-gray-400 leading-tight">The CPU executes <strong>pure, optimized machine code</strong>, bypassing Python completely.</p>
+                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-gauge-high mr-2"></i>3. Machine Speed</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">The compiler outputs pure machine code tailored to your exact CPU architecture instantly.</p>
             </div>
         </div>
 
@@ -85,10 +85,6 @@
                 </div>
                 <p class="text-xs text-gray-400 font-mono m-0 h-4" id="jit-status">Function loaded in Python. Waiting to be called...</p>
             </div>
-            
-            <div class="absolute bottom-2 right-4 text-[9px] text-gray-400 text-right">
-                *LLVM: Modular and reusable compiler framework (Lattner & Adve, 2004)
-            </div>
         </div>
 
     </div>
@@ -114,32 +110,21 @@
 </section>
 
 <section data-auto-animate>
-    <h2 class="mb-6"><i class="fa-solid fa-code-compare text-orange-400 mr-6"></i>NumPy Vectorization vs. Numba JIT</h2>
-    <p class="text-gray-300 mb-4 text-xl">Mandelbrot Fractal (Early Stopping)</p>
+    <h2><i class="fa-solid fa-fire text-orange-400 mr-3"></i>The Booster: Numba</h2>
     
     <div class="grid grid-cols-2 gap-6 text-left w-full mb-6">
-        <div class="w-full h-[450px] glass-panel text-left border-t-4 border-red-500 flex flex-col justify-between">
-            <div>
-                <h4 class="text-red-400 mb-2 font-bold"><i class="fa-solid fa-xmark mr-2"></i>NumPy (Masking)</h4>
-                <pre data-id="numbacode" class="max-h-[220px] overflow-y-auto m-0"><code class="python text-[11px] leading-tight" data-trim>
+        
+        <div class="w-full glass-panel text-left border-t-4 border-red-500">
+            <h4 class="text-red-400 mb-2 font-bold"><i class="fa-solid fa-xmark mr-2"></i>Standard Python</h4>
+            <pre data-id="numbacode"><code class="python text-sm" data-trim>
 import numpy as np
 
-def mandelbrot_np(c, max_iter):
-    output = np.zeros(c.shape, dtype=int)
-    z = np.zeros_like(c)
-    mask = np.ones(c.shape, dtype=bool)
-
-    for i in range(max_iter):
-        z[mask] = z[mask]**2 + c[mask]
-        new_escaped = (np.abs(z) > 2.0) & mask
-        output[new_escaped] = i
-        mask[new_escaped] = False 
-        
-    output[mask] = max_iter
-    return output
-                </code></pre>
-            </div>
-
+def heat_equation(u, alpha, dt, dx, steps):
+for t in range(steps): # State dependent!
+    laplacian = np.diff(u, 2) / (dx**2)
+    u[1:-1] = u[1:-1] + alpha * dt * laplacian
+    return u
+            </code></pre>
             <div class="mt-6">
                 <div class="race-track w-full border border-gray-700 bg-gray-800">
                     <div id="heq-np" class="car bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]"></div>
@@ -150,32 +135,19 @@ def mandelbrot_np(c, max_iter):
             </div>
         </div>
         
-        <div class="w-full h-[450px] glass-panel text-left border-t-4 border-green-500 flex flex-col justify-between">
-            <div>
-                <h4 class="text-green-400 mb-2 font-bold"><i class="fa-solid fa-check mr-2"></i>Numba JIT (Early Break)</h4>
-                <pre data-id="numbacode-after" class="max-h-[220px] overflow-y-auto m-0"><code class="python text-[11px] leading-tight" data-trim>
+        <div class="w-full glass-panel text-left border-t-4 border-green-500">
+            <h4 class="text-green-400 mb-2 font-bold"><i class="fa-solid fa-check mr-2"></i>Numba JIT</h4>
+            <pre data-id="numbacode-after"><code class="python text-sm" data-trim>
 from numba import njit
 import numpy as np
 
-@njit(fastmath=True)
-def mandelbrot_nb(c, max_iter):
-    rows, cols = c.shape
-    output = np.zeros(c.shape, dtype=np.int32)
-    
-    for i in range(rows):
-        for j in range(cols):
-            z = 0.0j
-            for k in range(max_iter):
-                z = z*z + c[i, j]
-                if z.real**2 + z.imag**2 > 4.0: 
-                    output[i, j] = k
-                    break
-            else:
-                output[i, j] = max_iter
-    return output
-                </code></pre>
-            </div>
-            
+@njit  # This is our JIT flag!
+def heat_equation(u, alpha, dt, dx, steps):
+    for t in range(steps):
+    laplacian = np.diff(u, 2) / (dx**2)
+    u[1:-1] = u[1:-1] + alpha * dt * laplacian
+    return u
+            </code></pre>
             <div class="mt-6">
                 <div class="race-track w-full border border-gray-700 bg-gray-800">
                     <div id="heq-nb" class="car bg-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.6)]"></div>
@@ -184,24 +156,18 @@ def mandelbrot_nb(c, max_iter):
                     Time: <span id="time-heq-nb" class="font-mono text-white font-bold">--</span>
                 </div>
             </div>
-
-        </div>
-
-        <div id="benchmark-conclusion-heq" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600/95 backdrop-blur-md text-white font-bold text-4xl p-10 rounded-full shadow-[0_0_80px_rgba(220,38,38,0.8)] scale-0 transition-transform duration-700 ease-out flex flex-col items-center border-4 border-white/20 z-50 pointer-events-none">
-            <i class="fa-solid fa-rocket mb-3 text-6xl drop-shadow-lg"></i>
-            <span>~<span id = "ratio-heq"></span>x Faster!</span>
         </div>
 
     </div>
 
-    <button onclick="runHeatEqRace()" id="btn-heateq-race" class="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-500 hover:to-orange-500 text-white font-bold py-3 px-12 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all transform hover:scale-105 text-xl">
-        <i class="fa-solid fa-play mr-2"></i> Compare
+    <button onclick="runHeatEqRace()" id="btn-heateq-race" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)] transition transform hover:scale-105">
+        <i class="fa-solid fa-play mr-2"></i> Fetch Backend Benchmark
     </button>
 </section>
 
-<!-- <section>
-    <h2><i class="fa-solid fa-bullseye text-orange-400 mr-3"></i>Visual Benchmark: Monte Carlo Pi</h2>
-    <p class="text-sm text-left text-gray-400 mb-6 italic">Estimating $\pi$ by throwing 1,000,000 random darts.</p>
+<section>
+    <h2><i class="fa-solid fa-fire text-orange-400 mr-3"></i>Real Example: Monte Carlo Pi</h2>
+    <p class="text-sm text-left text-gray-400 mb-6 italic">Estimating Pi by throwing 1,000,000 random darts.</p>
     
     <div class="flex gap-6 items-stretch">
         <div class="w-1/2 glass-panel flex flex-col justify-center text-center !p-4">
@@ -241,16 +207,15 @@ def montecarlo(n):
             </button>
         </div>
     </div>
-</section> -->
+</section>
 
 <section>
-    <h2><i class="fa-solid fa-gears text-purple-400 mr-3"></i>Advanced <code class="bg-gray-800 text-white px-2 rounded-lg">@njit</code> Parameters</h2>
-    <p class="text-lg text-left text-gray-300 mb-6">Supercharge your compilation via the signature flags.</p>
-    
+    <h2><i class="fa-solid fa-gears text-purple-400 mr-3"></i>JIT: Advanced Parameters</h2>
+    <p class="text-lg text-left text-gray-300 mb-6">Supercharge your compilation via the <code>@njit()</code> signature.</p>
     <div class="grid grid-cols-3 gap-6 mt-6">
         <div class="glass-panel border-t-4 border-cyan-500 bg-cyan-900/10">
             <h4 class="text-cyan-400 font-bold mb-2 text-xl"><code>parallel=True</code></h4>
-            <p class="text-[13px] text-gray-400 mb-4 h-12">Distributes execution across CPU cores automatically. Requires <strong><code>prange()</code></strong>.</p>
+            <p class="text-sm text-gray-400 mb-4 h-16">Distributes execution across CPU cores. Replace <code>range()</code> with <code>prange()</code>.</p>
             <pre class="!m-0 !p-2"><code class="python text-[11px]" data-trim>
 @njit(parallel=True)
 def calc(x):
@@ -260,7 +225,7 @@ def calc(x):
         </div>
         <div class="glass-panel border-t-4 border-red-500 bg-red-900/10">
             <h4 class="text-red-400 font-bold mb-2 text-xl"><code>fastmath=True</code></h4>
-            <p class="text-[13px] text-gray-400 mb-4 h-12">Relaxes IEEE-754 standards for <strong>faster floating-point</strong> math.</p>
+            <p class="text-sm text-gray-400 mb-4 h-16">Relaxes strict IEEE-754 standards for floating-point math. Speeds up triggers/logs.</p>
             <pre class="!m-0 !p-2"><code class="python text-[11px]" data-trim>
 @njit(fastmath=True)
 def fast_sin(x):
@@ -269,7 +234,7 @@ def fast_sin(x):
         </div>
         <div class="glass-panel border-t-4 border-green-500 bg-green-900/10">
             <h4 class="text-green-400 font-bold mb-2 text-xl"><code>nogil=True</code></h4>
-            <p class="text-[13px] text-gray-400 mb-4 h-12"><strong>Releases the GIL</strong> for true multi-threading without multiprocessing overhead.</p>
+            <p class="text-sm text-gray-400 mb-4 h-16">Completely releases the Python Global Interpreter Lock for this function block.</p>
             <pre class="!m-0 !p-2"><code class="python text-[11px]" data-trim>
 @njit(nogil=True)
 def thread_safe(x):
@@ -281,22 +246,20 @@ def thread_safe(x):
 </section>
 
 <section>
-    <h2><i class="fa-solid fa-triangle-exclamation text-pink-400 mr-3"></i>Limits of JIT Compilation</h2>
-    
+    <h2><i class="fa-solid fa-code-merge text-pink-400 mr-3"></i>Limits of JIT Compilers</h2>
     <div class="flex gap-6 mt-8">
         <div class="w-1/3 glass-panel border-l-4 border-purple-500 flex flex-col items-start">
             <h4 class="text-purple-400 font-bold mb-2"><i class="fa-solid fa-cubes-stacked text-3xl text-purple-400 mb-3"></i> API Compatibility</h4>
-            <p class="text-[14px] text-gray-400"><strong>Strictly typed.</strong> Compilers cannot process Pandas DataFrames or mixed-type dictionaries. Stick to NumPy arrays and primitives.</p>
+            <p class="text-[14px] text-gray-400">Compilers cannot process custom or mixed Python objects natively. No Pandas DataFrames, no dictionaries of mixed types. Stick strictly to NumPy arrays and primitives.</p>
         </div>
-        
         <div class="w-1/3 glass-panel border-l-4 border-red-500 flex flex-col items-start">
-            <h4 class="text-red-400 font-bold mb-2"><i class="fa-solid fa-hourglass-start text-3xl text-red-400 mb-3"></i> Warm-Up Overhead</h4>
-            <p class="text-[14px] text-gray-400"><strong>LLVM takes time.</strong> The very first function call is slow as it triggers the compilation. Bad for scripts that only run once.</p>
+            <h4 class="text-red-400 font-bold mb-2"><i class="fa-solid fa-hourglass-start text-3xl text-red-400 mb-3"></i>
+                Warm-Up Overhead</h4>
+            <p class="text-[14px] text-gray-400">The first function call takes seconds to compile via LLVM. If your script runs a small loop only once, JIT will make it <em>slower</em> overall (AOT compilation is an alternative).</p>
         </div>
-        
         <div class="w-1/3 glass-panel border-l-4 border-yellow-500 flex flex-col items-start">
             <h4 class="text-yellow-400 font-bold mb-2"><i class="fa-solid fa-ban text-3xl text-yellow-400 mb-3"></i> No Side Effects</h4>
-            <p class="text-[14px] text-gray-400"><strong>No I/O.</strong> You cannot connect to databases, send network requests, or reliably use `print()` statements inside an `@njit` block.</p>
+            <p class="text-[14px] text-gray-400">Pure machine code operates on RAM directly. You cannot connect to databases, send network requests, or reliably use `print()` statements inside a fully compiled `njit` block.</p>
         </div>
     </div>
 </section>

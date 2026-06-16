@@ -1,6 +1,6 @@
 <section>
-    <h2 class="text-gradient mb-4"><i class="fa-solid fa-triangle-exclamation text-8xl text-red-500 mb-4 block"></i>The Ultimate Limit: System RAM</h2>
-    <p class="text-xl text-gray-300 mb-8">What happens when your dataset size physically exceeds your memory?</p>
+    <h2 class="text-gradient mb-4"><i class="fa-solid fa-triangle-exclamation text-8xl text-red-500 mb-4 block"></i>A Last General Limit</h2>
+    <p class="text-xl text-gray-300 mb-8">What happens when your dataset size exceeds your System RAM?</p>
     
     <div class="glass-panel text-center relative overflow-hidden bg-red-900/20 border-red-800">
         <pre class="!bg-black/80 !border !border-red-500 !shadow-[0_0_30px_rgba(239,68,68,0.3)] !m-0"><code class="python text-red-400" data-trim>
@@ -17,26 +17,26 @@ Unable to allocate 7.45 TiB for an array with shape (1000000, 1000000)...</code>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>3. Out-of-Core Computations</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>4. Out-of-Core Computations</h2>
     <p class="text-xl text-gray-300 mb-8">Processing massive datasets gracefully without crashing.</p>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>How Out-of-Core Processing Works</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-database mr-3"></i>Principle</h2>
     
     <div class="flex gap-6 items-stretch">
         <div class="w-1/2 flex flex-col justify-between">
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-red-500 hover:scale-105 transition-transform" data-fragment-index="1">
-                <h4 class="text-red-400 font-bold mb-2 text-lg"><i class="fa-solid fa-shield-halved mr-2"></i>1. The Memory Wall</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>System Crash.</strong> Native tools attempt to allocate the entire dataset into RAM at once.</p>
+                <h4 class="text-red-400 font-bold mb-2 text-lg"><i class="fa-solid fa-shield-halved mr-2"></i>1. Memory Wall</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">Native tools would try to allocate/load memory that does not fit in the RAM resulting in a crash.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-blue-500 hover:scale-105 transition-transform" data-fragment-index="2">
                 <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-solid fa-map mr-2"></i>2. Task Graphs</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>Lazy Evaluation.</strong> The engine doesn't load data immediately; it maps a schedule of instructions.</p>
+                <p class="text-[14px] text-gray-400 leading-tight">The Engine doesn't load data, it uses a <b>Scheduler</b> to map out operations as a graph of instructions (this is called lazy evaluation).</p>
             </div>
             <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-purple-500 hover:scale-105 transition-transform" data-fragment-index="2">
-                <h4 class="text-purple-400 font-bold mb-2 text-lg"><i class="fa-solid fa-water mr-2"></i>3. Chunk Streaming</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>Piecemeal Execution.</strong> Data is streamed from disk to RAM in tiny chunks, saving only the final output.</p>
+                <h4 class="text-purple-400 font-bold mb-2 text-lg"><i class="fa-solid fa-water mr-2"></i>3. Streaming</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">Upon receiving a triggering signal the data is streamed in tiny chunks from Disk to RAM, saving only the intermediate outputs.</p>
             </div>
         </div>
 
@@ -90,7 +90,6 @@ Unable to allocate 7.45 TiB for an array with shape (1000000, 1000000)...</code>
 </style>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bars-progress mr-3"></i>Visualizing the Chunk Stream</h2>
     <div class="glass-panel flex flex-col items-center mt-6">
         <div class="w-full flex items-end gap-6 mb-6">
             <div class="w-1/4 text-right font-bold text-gray-400 text-sm border-r border-gray-600 pr-4">
@@ -113,6 +112,7 @@ Unable to allocate 7.45 TiB for an array with shape (1000000, 1000000)...</code>
     </div>
 </section>
 
+
 <section class="text-center" data-transition="zoom">
     <div class="flex justify-center w-full mb-6">
         <img src="./logos/dask.png" alt="Dask" class="h-40 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)] m-0">
@@ -122,7 +122,7 @@ Unable to allocate 7.45 TiB for an array with shape (1000000, 1000000)...</code>
 </section>
 
 <section data-auto-animate>
-    <h2 class="mb-6"><i class="fa-solid fa-code-compare text-purple-400 mr-6"></i>NumPy vs. Dask: Lazy Evaluation</h2>
+    <h2><i class="fa-solid fa-database text-purple-400 mr-3"></i>The Scale-Out Tool: Dask</h2>
     <div class="flex gap-6">
         <div class="w-1/2 glass-panel text-left border-t-4 border-red-500">
             <h4 class="text-red-400 mb-2 font-bold"><i class="fa-solid fa-xmark mr-2"></i>NumPy (Crash)</h4>
@@ -150,8 +150,8 @@ result = x.mean().compute() # triggers computation
 </section>
 
 <section>
-    <h2><i class="fa-solid fa-server text-blue-400 mr-3"></i>Scaling Out: Distributed Clusters</h2>
-    <p class="text-lg text-center text-gray-300 mb-6">Dask doesn't just stream chunks sequentially—it can process them in parallel across multiple workers.</p>
+    <h2><i class="fa-solid fa-server text-blue-400 mr-3"></i>Dask: Distributed Clusters</h2>
+    <p class="text-lg text-left text-gray-300 mb-6">Dask doesn't just stream chunks sequentially—it can process them in parallel.</p>
     
     <div class="glass-panel text-left border-l-4 border-blue-500 mb-6">
         <pre><code class="python text-sm" data-trim data-noescape>
@@ -161,13 +161,13 @@ from dask.distributed import Client, LocalCluster
 cluster = LocalCluster(n_workers=4, threads_per_worker=2, memory_limit='2GB')
 client = Client(cluster)
 
-# Any Dask operation will be automatically distributed
+# Now, any Dask operation will be automatically distributed
 # across the 4 workers, processing 4 chunks simultaneously!
 result = x.mean().compute()
         </code></pre>
     </div>
     
-    <div class="fragment fade-up flex items-center justify-center gap-8 mt-8">
+    <div class="flex items-center justify-center gap-8 mt-8">
         <div class="text-center text-gray-400">
             <i class="fa-solid fa-laptop text-5xl text-gray-500 mb-2 block"></i>
             <span class="text-sm">Local Machine</span>

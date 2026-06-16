@@ -1,24 +1,23 @@
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bars-staggered mr-3"></i>0. Vectorization & Pre-Compiled Routines</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bars-staggered mr-3"></i>1. Vectorization + Pre-Compiled Routines</h2>
     <p class="text-xl text-gray-300 mb-8">Shifting from "Element-by-Element" to "Whole-Array" computing.</p>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-microchip mr-3"></i>How Vectorization Works (SIMD)</h2>
-    
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bars-staggered mr-3"></i>Principle</h2>
     <div class="flex gap-6 items-stretch">
         <div class="w-1/2 flex flex-col justify-between">
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-red-500 hover:scale-105 transition-transform" data-fragment-index="1">
                 <h4 class="text-red-400 font-bold mb-2 text-lg"><i class="fa-solid fa-rotate mr-2"></i>1. Scalar Loop</h4>
-                <p class="text-[14px] text-gray-400 leading-tight">Processes <strong>one element at a time</strong>. Extreme overhead from constant Python type-checking.</p>
+                <p class="text-[14px] text-gray-400 leading-tight">Fetches, checks types, and processes data exactly one element at a time. Extremely high overhead.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-blue-500 hover:scale-105 transition-transform" data-fragment-index="2">
                 <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-solid fa-layer-group mr-2"></i>2. Contiguous Memory</h4>
-                <p class="text-[14px] text-gray-400 leading-tight">Aligns uniform C-arrays tightly in RAM. <strong>Bypasses the Python interpreter</strong> completely.</p>
+                <p class="text-[14px] text-gray-400 leading-tight">Aligns uniform data types strictly in memory, bypassing the interpreter's type-checking.</p>
             </div>
             <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-green-500 hover:scale-105 transition-transform" data-fragment-index="2" >
-                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-microchip mr-2"></i>3. Hardware SIMD</h4>
-                <p class="text-[14px] text-gray-400 leading-tight"><strong>Single Instruction, Multiple Data.</strong> The CPU registers compute entire data blocks simultaneously.</p>
+                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-microchip mr-2"></i>3. Hardware Vectorization</h4>
+                <p class="text-[14px] text-gray-400 leading-tight">Single Instruction, Multiple Data (SIMD). The CPU registers compute entire blocks simultaneously.</p>
             </div>
         </div>
 
@@ -79,7 +78,7 @@
 </section>
 
 <section data-auto-animate>
-    <h2 class="mb-6"><i class="fa-solid fa-code-compare text-blue-400 mr-6"></i>Python Loop vs. Vectorization</h2>
+    <h2 class="mb-6"><i class="fa-solid fa-layer-group text-blue-400 mr-6"></i>The Fundamental: NumPy</h2>
     <p class="text-lg text-left text-gray-300 mb-4 italic">Applying $\log$ and adding 1 ($O(N)$)</p>
     
     <div class="grid grid-cols-2 gap-6 text-left w-full mb-6">
@@ -110,103 +109,99 @@ result = np.log1p(data) # C Routine!
             </code></pre>
             <div class="mt-6">
                 <div class="race-track w-full border border-gray-700 bg-gray-800">
-                    <div id="live-np" class="car bg-orange-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]"></div>
+                    <div id="live-np" class="car bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.6)]"></div>
                 </div>
                 <div class="text-sm text-gray-400 mt-2 text-right">
                     Time: <span id="time-live-np" class="font-mono text-white font-bold">--</span>
                 </div>
             </div>
         </div>
-
-        <div id="benchmark-conclusion-live" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600/95 backdrop-blur-md text-white font-bold text-4xl p-10 rounded-full shadow-[0_0_80px_rgba(220,38,38,0.8)] scale-0 transition-transform duration-700 ease-out flex flex-col items-center border-4 border-white/20 z-50 pointer-events-none">
-            <i class="fa-solid fa-rocket mb-3 text-6xl drop-shadow-lg"></i>
-            <span>~<span id = "ratio-live"></span>x Faster!</span>
-        </div>
-
     </div>
     
-    <button onclick="runLiveArrayRace()" id="btn-array-race" class="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-500 hover:to-orange-500 text-white font-bold py-3 px-12 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all transform hover:scale-105 text-xl">
-        <i class="fa-solid fa-play mr-2"></i> Compare
+    <button onclick="runLiveArrayRace()" id="btn-array-race" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)] transition transform hover:scale-105">
+        <i class="fa-solid fa-play mr-2"></i> Fetch Backend Benchmark
     </button>
 </section>
 
 <section>
-    <h2><i class="fa-solid fa-magnifying-glass-chart text-blue-400 mr-3"></i>Beware: Under the Hood</h2>
+    <h2><i class="fa-solid fa-magnifying-glass-chart text-blue-400 mr-3"></i>NumPy: Under the Hood</h2>
     
     <div class="grid grid-cols-2 gap-6 text-left mt-8">
         <div class="glass-panel border-t-4 border-yellow-500">
             <h4 class="text-yellow-400 font-bold mb-3"><i class="fa-solid fa-microchip mr-2"></i>Implicit Multithreading</h4>
-            <p class="text-[15px] text-gray-300 mb-4">NumPy links to optimized C libraries (OpenBLAS, MKL) that <strong>automatically hijack all CPU cores</strong>.</p>
+            <p class="text-[15px] text-gray-300 mb-4">NumPy often links to highly optimized C libraries (OpenBLAS, MKL) which automatically hijack all your CPU cores for matrix ops.</p>
             <pre class="!m-0 !p-3"><code class="bash text-xs" data-trim>
 # Control this via environment variables!
 export OMP_NUM_THREADS=1
 export OPENBLAS_NUM_THREADS=1
             </code></pre>
-            <p class="text-xs text-gray-400 mt-2">Critical to limit when deploying to cloud containers.</p>
+            <p class="text-xs text-gray-400 mt-2">Critical when deploying to cloud containers or combining with multiprocessing tools.</p>
         </div>
 
         <div class="glass-panel border-t-4 border-purple-500">
             <h4 class="text-purple-400 font-bold mb-3"><i class="fa-solid fa-memory mr-2"></i>Temporary Memory Bloat</h4>
-            <p class="text-[15px] text-gray-300 mb-4">Compound operations create <strong>hidden intermediate arrays</strong> in memory.</p>
+            <p class="text-[15px] text-gray-300 mb-4">Compound vectorized operations create hidden intermediate arrays in memory.</p>
             <pre class="!m-0 !p-3"><code class="python text-xs" data-trim>
 # D = A * B + C 
 # What actually happens:
-temp1 = A * B        # Allocates RAM!
-D = temp1 + C        # Allocates RAM!
+temp1 = A * B        # Allocates memory!
+D = temp1 + C        # Allocates memory!
 del temp1            # Garbage collection
             </code></pre>
-            <p class="text-xs text-gray-400 mt-2">Use in-place ops (<code>np.add(A, B, out=A)</code>) for giant datasets.</p>
+            <p class="text-xs text-gray-400 mt-2">For giant arrays, consider in-place ops (e.g., <code>np.add(A, B, out=A)</code>) to save RAM.</p>
         </div>
     </div>
 </section>
 
 <section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-book-bookmark mr-3"></i>The Scientific Ecosystem</h2>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-book-bookmark mr-3"></i>The Scientist Stack</h2>
     
-    <div class="glass-panel border-l-4 border-blue-500 mb-10 text-left !p-4 relative overflow-hidden shadow-lg">
+    <div class="glass-panel border-l-4 border-blue-500 mb-10 text-left !p-6 relative overflow-hidden shadow-lg">
         <i class="fa-brands fa-python absolute -right-6 -bottom-8 text-9xl text-blue-900/20 rotate-12"></i>
-        <p class="text-[18px] text-gray-300 m-0 relative z-10">
-            Libraries provide pre-compiled foundational blocks so you don't have to reinvent complex algorithms from scratch.
+        <p class="text-[24px] text-gray-300 leading-snug relative z-10">
+            A <strong class="text-white">library</strong> is a collection of pre-written, reusable code. It provides optimized foundational blocks (functions and classes) so you don't have to reinvent complex mathematical or data-processing algorithms from scratch.
         </p>
     </div>
+
+    <!-- <h3 class="fragment fade-down text-lg text-gray-400 mb-6 text-left font-bold uppercase tracking-widest text-center mt-8" data-fragment-index="4">The Core Scientific Ecosystem</h3> -->
     
     <div class="grid grid-cols-4 gap-5 text-left">
         <div class="glass-panel fragment fade-up border-t-4 border-purple-500 flex flex-col hover:bg-purple-900/10 transition-colors shadow-lg" data-fragment-index="1">
             <i class="fa-solid fa-calculator text-4xl text-purple-400 mb-3"></i>
             <h4 class="text-xl font-bold mb-2 text-white">SciPy</h4>
-            <p class="text-[14px] text-gray-400">Optimization, integration, linear algebra, and signal processing.</p>
+            <p class="text-[14px] text-gray-400">Advanced math: optimization, numerical integration, linear algebra, and signal processing.</p>
         </div>
 
         <div class="glass-panel fragment fade-up border-t-4 border-yellow-500 flex flex-col hover:bg-yellow-900/10 transition-colors shadow-lg" data-fragment-index="2">
             <i class="fa-solid fa-table text-4xl text-yellow-400 mb-3"></i>
             <h4 class="text-xl font-bold mb-2 text-white">Pandas</h4>
-            <p class="text-[14px] text-gray-400">Tabular data manipulation via <code class="text-[12px] bg-black/50 px-1 rounded text-yellow-200">DataFrames</code>.</p>
+            <p class="text-[14px] text-gray-400">Data manipulation via <code class="text-[12px] bg-black/50 px-1 rounded text-yellow-200">DataFrames</code>. Essential for cleaning and querying tabular data.</p>
         </div>
 
         <div class="glass-panel fragment fade-up border-t-4 border-green-500 flex flex-col hover:bg-green-900/10 transition-colors shadow-lg" data-fragment-index="3">
             <i class="fa-solid fa-chart-line text-4xl text-green-400 mb-3"></i>
             <h4 class="text-xl font-bold mb-2 text-white">Matplotlib</h4>
-            <p class="text-[14px] text-gray-400">Industry standard for 2D/3D visualization and plotting.</p>
+            <p class="text-[14px] text-gray-400">The industry standard for 2D and 3D data visualization, plotting, and graphing.</p>
         </div>
 
         <div class="glass-panel fragment fade-up border-t-4 border-orange-500 flex flex-col hover:bg-orange-900/10 transition-colors shadow-lg" data-fragment-index="4">
             <i class="fa-solid fa-brain text-4xl text-orange-400 mb-3"></i>
             <h4 class="text-xl font-bold mb-2 text-white">Scikit-Learn</h4>
-            <p class="text-[14px] text-gray-400">Machine Learning: classification, regression, and clustering.</p>
+            <p class="text-[14px] text-gray-400">Machine Learning made easy. Out-of-the-box classification, regression, and clustering.</p>
         </div>
     </div>
     
     <p class="text-[13px] text-gray-500 mt-5 italic text-center fragment fade-in" data-fragment-index="4">
-        <i class="fa-solid fa-circle-info mr-1"></i> These high-level libraries are built natively on top of <strong>NumPy</strong>.
+        <i class="fa-solid fa-circle-info mr-1"></i> All of these high-level libraries are built natively on top of <strong>NumPy</strong> to guarantee raw speed.
     </p>
 </section>
 
+
 <section>
-    <h2><i class="fa-solid fa-triangle-exclamation text-yellow-400 mr-3"></i>Limits of Vectorization</h2>
-    
+    <h2><i class="fa-solid fa-memory text-purple-400 mr-3"></i>Limits of Vectorization</h2>
     <div class="bg-yellow-900/40 border border-yellow-600 rounded-lg p-4 mb-8 text-left text-lg text-gray-200">
-        <i class="fa-solid fa-circle-exclamation text-yellow-500 mr-2"></i> 
-        <strong>State Dependence:</strong> If step $N$ depends on the result of step $N-1$, it <strong>cannot</strong> be natively vectorized. You are forced back into a slow Python loop.
+        <i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i> 
+        <strong>State Dependence:</strong> Algorithms where step $N$ depends on step $N-1$ cannot be vectorized natively. You are forced back into a slow Python <code>for</code> loop.
     </div>
     
     <div class="flex justify-center items-center gap-4 bg-gray-900/80 p-6 rounded-xl border border-gray-700">

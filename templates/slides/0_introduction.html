@@ -1,80 +1,7 @@
-<section>
-    <h2 class="text-gradient mb-6"><i class="fa-solid fa-server mr-3"></i>Hardware Fundamentals</h2>
-
-    <div class="flex gap-6 items-stretch h-[500px]">
-        
-        <div class="w-[40%] glass-panel relative overflow-hidden flex flex-col justify-center items-center circuit-bg">
-            <div id="tp-container" class="w-full h-full relative transition-all duration-700 flex items-center justify-center gap-6">
-                <div class="bg-blue-900/30 border-2 border-blue-500 rounded-xl p-6 flex flex-col items-center shadow-[0_0_20px_rgba(59,130,246,0.3)] w-64 h-72 relative overflow-hidden animate-pop-in">
-                    <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-900/50 px-2 rounded">Process 1</span>
-                    <div class="mt-8 flex flex-col items-center w-full gap-8">
-                        <div class="w-full h-16 border border-purple-500 bg-purple-900/30 rounded flex items-center justify-center relative shadow-inner">
-                            <span class="text-xs text-purple-300 font-mono">Isolated Memory</span>
-                        </div>
-                        <div class="flex gap-4 w-full justify-center">
-                            <div class="w-12 h-12 bg-green-500/20 border-2 border-green-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.5)] relative">
-                                <i class="fa-solid fa-gears text-green-400 text-lg animate-spin"></i>
-                                <span class="absolute -bottom-5 text-[9px] text-green-400 font-bold">Thread 1</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="w-[60%] flex flex-col justify-between">
-            <div class="glass-panel mb-4 flex-1 border-l-4 border-gray-500 transition-all duration-300 relative group" id="desc-base">
-                <h4 class="text-gray-300 font-bold mb-2 text-lg">The Baseline</h4>
-                <p class="text-[14px] text-gray-400">A standard program runs as a single <strong>Process</strong> with one isolated memory space and a single execution <strong>Thread</strong>.</p>
-            </div>
-
-            <div class="fragment glass-panel flex-1 border-l-4 border-green-500 opacity-60 transition-all duration-300 cursor-pointer hover:opacity-100 hover:scale-[1.02] bg-green-900/10" id="btn-thread" onclick="showThreads()" data-fragment-index="1">
-                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-code-branch mr-2"></i>Multi-Threading</h4>
-                <p class="text-[13px] text-gray-400 leading-tight">Spawns new workers inside the <em>same</em> process. <strong>Memory is shared</strong>. Very lightweight, but risks data corruption.</p>
-            </div>
-
-            <div class="fragment glass-panel mb-4 flex-1 border-l-4 border-blue-500 opacity-60 transition-all duration-300 cursor-pointer hover:opacity-100 hover:scale-[1.02] bg-blue-900/10" id="btn-process" onclick="showProcesses()" data-fragment-index="2">
-                <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-solid fa-clone mr-2"></i>Multi-Processing</h4>
-                <p class="text-[13px] text-gray-400 leading-tight">Spawns completely new programs. <strong>Memory is duplicated</strong>. Safe from race conditions, but heavy on RAM overhead.</p>
-            </div>
-
-            <button class="mt-4 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-300 text-xs py-2 rounded transition shadow-lg w-full" onclick="resetTP()">
-                <i class="fa-solid fa-rotate-right mr-2"></i>Reset to Baseline
-            </button>
-        </div>
-    </div>
-</section>
-
-
-<section>
-    <h2 class="text-gradient mb-8"><i class="fa-solid fa-gauge mr-3"></i>Why is Python Slow?</h2>
-    
-    <div class="grid grid-cols-2 gap-6 text-left">
-        <div class="glass-panel fragment fade-up border-t-4 border-blue-500">
-            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-scroll text-blue-600 text-2xl mr-2 align-middle"></i> Interpreted</h4>
-            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Python isn't pre-compiled. The interpreter translates and executes bytecode line-by-line at runtime, introducing massive instruction overhead as the CPU constantly routes logic on the fly.</p>
-        </div>
-        
-        <div class="glass-panel fragment fade-up border-t-4 border-yellow-500">
-            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-shuffle text-yellow-600 text-2xl mr-2 align-middle"></i> Dynamically Typed</h4>
-            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Variables lack fixed memory layouts. For every operation, Python must pause to inspect object types and look up methods, severely bottlenecking tight mathematical loops.</p>
-        </div>
-        
-        <div class="glass-panel fragment fade-up border-t-4 border-red-500">
-            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-lock text-red-600 text-2xl mr-2 align-middle"></i> The GIL <span class="text-[14px] text-red-500 font-normal ml-1 tracking-tight">(Global Interpreter Lock)</span></h4>
-            <p class="text-gray-400 text-[15px] leading-relaxed m-0">This mutex ensures only one native thread executes Python bytecode at a time. While it simplifies memory management, it completely prevents true parallel execution for CPU-bound workloads.</p>
-        </div>
-        
-        <div class="glass-panel fragment fade-up border-t-4 border-purple-500">
-            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-boxes-stacked text-purple-600 text-2xl mr-2 align-middle"></i> High-Level Objects</h4>
-            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Everything is a heavy <code>PyObject</code> C-structure, not just raw bytes. This overhead destroys data locality, leading to severe memory fragmentation and constant CPU cache misses.</p>
-        </div>
-    </div>
-</section>
-
-
 <section>        
+    <h2 class="text-gradient mb-2"><i class="fa-solid fa-stopwatch mr-3"></i>The Speed Gap</h2>
     <p class="text-lg text-left text-gray-300 mb-4 italic">Calculating the Pairwise Euclidean Distance Matrix ($O(N^3)$)</p>
+    
     <div class="grid grid-cols-2 gap-8 text-left">
         <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col justify-between shadow-lg">
             <div>
@@ -131,15 +58,41 @@
     </div>
     
     <div class="mt-8 text-center relative z-4 flex flex-col items-center">
-        
         <button id="btn-edist-race" onclick="runPwDistRace()" class="bg-gradient-to-r from-blue-600 to-orange-600 hover:from-blue-500 hover:to-orange-500 text-white font-bold py-3 px-12 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all transform hover:scale-105 text-xl">
-            <i class="fa-solid fa-flag-checkered mr-2"></i> Run Benchmark
+            <i class="fa-solid fa-play mr-2"></i> Compare
         </button>
     </div>
 
-    <div id="benchmark-conclusion" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600/95 backdrop-blur-md text-white font-bold text-4xl p-10 rounded-full shadow-[0_0_80px_rgba(220,38,38,0.8)] scale-0 transition-transform duration-700 ease-out flex flex-col items-center border-4 border-white/20 z-50 pointer-events-none">
+    <div id="benchmark-conclusion-ed" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-600/95 backdrop-blur-md text-white font-bold text-4xl p-10 rounded-full shadow-[0_0_80px_rgba(220,38,38,0.8)] scale-0 transition-transform duration-700 ease-out flex flex-col items-center border-4 border-white/20 z-50 pointer-events-none">
         <i class="fa-solid fa-rocket mb-3 text-6xl drop-shadow-lg"></i>
         <span>C++ is ~<span id = "ratio-ed"></span>x Faster!</span>
+    </div>
+</section>
+
+
+<section>
+    <h2 class="text-gradient mb-8"><i class="fa-solid fa-gauge mr-3"></i>Why is Python Slow?</h2>
+    
+    <div class="grid grid-cols-2 gap-6 text-left">
+        <div class="glass-panel fragment fade-up border-t-4 border-blue-500">
+            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-scroll text-blue-600 text-2xl mr-2 align-middle"></i> Interpreted</h4>
+            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Translates bytecode at runtime, creating massive instruction routing overhead.</p>
+        </div>
+        
+        <div class="glass-panel fragment fade-up border-t-4 border-yellow-500">
+            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-shuffle text-yellow-600 text-2xl mr-2 align-middle"></i> Dynamically Typed</h4>
+            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Constant type-checking and method lookups bottleneck tight mathematical loops.</p>
+        </div>
+        
+        <div class="glass-panel fragment fade-up border-t-4 border-red-500">
+            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-lock text-red-600 text-2xl mr-2 align-middle"></i> The GIL <span class="text-[14px] text-red-500 font-normal ml-1 tracking-tight">(Global Interpreter Lock)</span></h4>
+            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Mutex prevents true multi-core execution for CPU-bound tasks within a single process.</p>
+        </div>
+        
+        <div class="glass-panel fragment fade-up border-t-4 border-purple-500">
+            <h4 class="font-bold text-xl mb-3"><i class="fa-solid fa-boxes-stacked text-purple-600 text-2xl mr-2 align-middle"></i> High-Level Objects</h4>
+            <p class="text-gray-400 text-[15px] leading-relaxed m-0">Heavy C-structures fragment memory and destroy CPU cache locality.</p>
+        </div>
     </div>
 </section>
 
@@ -148,7 +101,6 @@
     <h2 class="text-gradient mb-8"><i class="fa-solid fa-code text-white mr-3"></i>Why not just write C/C++?</h2>
     
     <div class="grid grid-cols-2 gap-8 text-left">
-        
         <div class="glass-panel relative overflow-hidden border-t-4 border-blue-500 group transition-all duration-300 hover:border-blue-400 cursor-pointer min-h-[250px] flex flex-col">
             <div class="absolute top-4 right-4 text-xs text-blue-500/50 bg-blue-900/20 px-2 py-1 rounded-full group-hover:opacity-0 transition-opacity duration-300"><i class="fa-solid fa-eye mr-1"></i>Hover for code</div>
             
@@ -257,7 +209,6 @@ int main(int argc, char *argv[]) {
     pairwise_dist(X, D, N, K);    
     cout << "Done." << endl;
 
-
     for (int i = 0; i < N; ++i) {
         delete[] X[i];
         delete[] D[i];
@@ -272,7 +223,6 @@ int main(int argc, char *argv[]) {
     </div>
 
     <div class="fragment mt-10 py-5 px-16 bg-gradient-to-r from-blue-900/40 to-red-900/40 rounded-xl border border-gray-600 shadow-xl flex items-center justify-center gap-16 w-fit mx-auto">
-
         <div class="text-center">
             <span class="text-sm font-bold"><i class="fa-solid fa-user text-blue-400 text-4xl mb-2 block"></i> Developer Time</span>
             <p class="text-xs text-gray-400 mt-1 m-0">Fast to prototype</p>
@@ -286,14 +236,186 @@ int main(int argc, char *argv[]) {
             <span class="text-sm font-bold"><i class="fa-solid fa-microchip text-red-400 text-4xl mb-2 block"></i> Machine Time</span>
             <p class="text-xs text-gray-400 mt-1 m-0">Slow to execute</p>
         </div>
-        
     </div>
 </section>
 
 <section>
-    <h2 class="text-7xl font-bold text-white italic">"Can we reach the speed of a compiled language and avoid the implementation complexity?"</h2>
+    <h2 class="text-6xl font-bold text-white italic">"Can we reach the speed of a compiled language and avoid the implementation complexity?"</h2>
     <div class="fragment mt-8 p-6 bg-green-900/30 border border-green-500 rounded-xl text-2xl font-bold shadow-lg inline-block" data-fragment-index="2">
         <i class="fa-solid fa-bullseye text-green-400 mr-3"></i> 
         Objective: C++ Speeds <span class="text-green-300 underline underline-offset-8">without leaving Python</span>.
+    </div>
+</section>
+
+
+<section>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-microchip mr-3"></i>Physical Hardware Reality</h2>
+    <p class="text-xl text-gray-300 mb-8">From software instructions to hardware execution.</p>
+    
+    <div class="flex gap-6 items-stretch h-[450px]">
+        
+        <div class="w-[50%] flex flex-col justify-between">
+            <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-blue-500" data-fragment-index="1">
+                <h4 class="text-blue-400 font-bold mb-1 text-lg"><i class="fa-solid fa-memory mr-2"></i>1. Memory (RAM)</h4>
+                <p class="text-[13px] text-gray-400 leading-tight m-0">Holds your program's instructions and data while it is actively running.</p>
+            </div>
+            
+            <div class="fragment fade-right glass-panel text-left mb-4 flex-1 border-l-4 border-yellow-500" data-fragment-index="2">
+                <h4 class="text-yellow-400 font-bold mb-1 text-lg"><i class="fa-solid fa-bolt mr-2"></i>2. The Bus</h4>
+                <p class="text-[13px] text-gray-400 leading-tight m-0">The physical wires that shuttle data packets between the RAM and the CPU.</p>
+            </div>
+            
+            <div class="fragment fade-right glass-panel text-left flex-1 border-l-4 border-green-500" data-fragment-index="3">
+                <h4 class="text-green-400 font-bold mb-1 text-lg"><i class="fa-solid fa-gears mr-2"></i>3. The CPU & Cores</h4>
+                <p class="text-[13px] text-gray-400 leading-tight m-0">The chip contains multiple independent <strong>Cores</strong> that crunch the data.</p>
+            </div>
+        </div>
+
+        <div class="fragment w-[50%] glass-panel relative overflow-hidden flex items-center justify-between p-8 circuit-bg" data-fragment-index="1">
+            
+            <div class="fragment w-24 h-48 bg-gray-900 border-2 border-blue-500 rounded-lg flex flex-col items-center justify-start py-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] z-10 relative" data-fragment-index="1">
+                <span class="text-xs font-bold text-blue-400 mb-2">RAM</span>
+                <div class="w-16 h-3 bg-blue-900/50 border border-blue-500/50 mb-1 rounded"></div>
+                <div class="w-16 h-3 bg-blue-900/50 border border-blue-500/50 mb-1 rounded"></div>
+                <div class="w-16 h-3 bg-blue-500 shadow-[0_0_10px_#3b82f6] mb-1 rounded"></div>
+                <div class="w-16 h-3 bg-blue-900/50 border border-blue-500/50 mb-1 rounded"></div>
+            </div>
+
+            <div class="fragment flex-1 h-4 relative flex items-center justify-center" data-fragment-index="2">
+                <div class="absolute w-full h-[2px] bg-gray-600 border-t border-b border-gray-700"></div>
+                <div class="absolute left-0 w-6 h-4 bg-yellow-400 rounded-full shadow-[0_0_15px_#facc15] z-20" style="animation: dataBusStream 1.5s linear infinite;"></div>
+            </div>
+
+            <div class="fragment w-56 h-56 bg-gray-800 border-4 border-gray-600 rounded-xl p-3 flex flex-col relative shadow-[0_0_30px_rgba(0,0,0,0.8)] z-10" data-fragment-index="3">
+                <span class="absolute -top-3 left-4 bg-gray-900 px-2 text-xs font-bold text-gray-300 border border-gray-600 rounded">1 Physical CPU Chip</span>
+                
+                <div class="grid grid-cols-2 gap-3 h-full w-full mt-2">
+                    <div class="bg-gray-900 border-2 border-green-500 rounded flex flex-col items-center justify-center relative shadow-[0_0_15px_rgba(34,197,94,0.3)] overflow-hidden">
+                        <i class="fa-solid fa-microchip text-2xl text-green-400 mb-1 animate-pulse-glow"></i>
+                        <span class="text-[10px] font-bold text-gray-400">Core 1</span>
+                        <div class="absolute bottom-0 w-full h-1 bg-green-500" style="animation: flashSuccess 1.5s infinite;"></div>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-600 rounded flex flex-col items-center justify-center opacity-60">
+                        <i class="fa-solid fa-microchip text-2xl text-gray-500 mb-1"></i>
+                        <span class="text-[10px] font-bold text-gray-500">Core 2</span>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-600 rounded flex flex-col items-center justify-center opacity-60">
+                        <i class="fa-solid fa-microchip text-2xl text-gray-500 mb-1"></i>
+                        <span class="text-[10px] font-bold text-gray-500">Core 3</span>
+                    </div>
+                    <div class="bg-gray-900 border border-gray-600 rounded flex flex-col items-center justify-center opacity-60">
+                        <i class="fa-solid fa-microchip text-2xl text-gray-500 mb-1"></i>
+                        <span class="text-[10px] font-bold text-gray-500">Core 4</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section data-auto-animate>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-bridge mr-3"></i>The OS Bridge</h2>
+    <p class="text-xl text-gray-300 mb-8">How the Operating System translates physical components into software.</p>
+
+    <div class="grid grid-cols-2 gap-8 items-stretch">
+        
+        <div class="glass-panel text-left flex flex-col items-center p-8 border-t-4 border-purple-500 fragment fade-up">
+            <h4 class="text-purple-400 font-bold mb-6 text-2xl w-full text-center">Memory Abstraction</h4>
+            
+            <div class="flex items-center justify-center gap-6 w-full mb-6">
+                <div class="text-center w-24">
+                    <i class="fa-solid fa-memory text-5xl text-blue-400 mb-3 block"></i>
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">RAM</span>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] text-gray-500 mb-1">OS allocates</span>
+                    <i class="fa-solid fa-arrow-right text-2xl text-gray-500"></i>
+                </div>
+                
+                <div class="bg-purple-900/30 border-2 border-purple-500 rounded-xl p-4 text-center shadow-[0_0_20px_rgba(168,85,247,0.3)] w-32 relative">
+                    <span class="text-[11px] font-bold text-purple-300 uppercase tracking-widest absolute -top-3 left-1/2 -translate-x-1/2 bg-gray-900 px-2 rounded border border-purple-500">Process</span>
+                    <div class="w-full h-12 border border-purple-400 border-dashed bg-purple-900/50 rounded flex items-center justify-center mt-2">
+                        <span class="text-[10px] text-purple-200 text-center leading-tight">Isolated<br>Sandbox</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-[15px] text-gray-300 text-center m-0">The OS fences off a chunk of physical RAM to prevent programs from overwriting each other. This protected sandbox is called a <strong>Process</strong>.</p>
+        </div>
+
+        <div class="glass-panel text-left flex flex-col items-center p-8 border-t-4 border-green-500 fragment fade-up">
+            <h4 class="text-green-400 font-bold mb-6 text-2xl w-full text-center">Execution Abstraction</h4>
+            
+            <div class="flex items-center justify-center gap-6 w-full mb-6">
+                <div class="text-center w-24">
+                    <i class="fa-solid fa-microchip text-5xl text-gray-400 mb-3 block"></i>
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-widest">Core</span>
+                </div>
+                
+                <div class="flex flex-col items-center">
+                    <span class="text-[10px] text-gray-500 mb-1">OS schedules</span>
+                    <i class="fa-solid fa-arrow-right text-2xl text-gray-500"></i>
+                </div>
+                
+                <div class="text-center w-32 flex flex-col items-center">
+                    <div class="w-14 h-14 bg-green-500/20 border-2 border-green-500 rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.4)] mb-3">
+                        <i class="fa-solid fa-gears text-green-400 text-2xl animate-spin"></i>
+                    </div>
+                    <span class="text-[11px] font-bold text-green-400 uppercase tracking-widest">Thread</span>
+                </div>
+            </div>
+
+            <p class="text-[15px] text-gray-300 text-center m-0">A <strong>Thread</strong> is simply a sequence of code instructions. The OS schedules these software threads to run on the physical hardware Cores.</p>
+        </div>
+
+    </div>
+</section>
+
+<section>
+    <h2 class="text-gradient mb-6"><i class="fa-solid fa-layer-group mr-3"></i>Software Execution Models</h2>
+    <p class="text-xl text-gray-300 mb-8">How we combine Processes and Threads in Python.</p>
+
+    <div class="flex gap-6 items-stretch h-[500px]">
+        <div class="w-[40%] glass-panel relative overflow-hidden flex flex-col justify-center items-center circuit-bg">
+            <div id="tp-container" class="w-full h-full relative transition-all duration-700 flex items-center justify-center gap-6">
+                <div class="bg-blue-900/30 border-2 border-blue-500 rounded-xl p-6 flex flex-col items-center shadow-[0_0_20px_rgba(59,130,246,0.3)] w-64 h-72 relative overflow-hidden animate-pop-in">
+                    <span class="absolute top-2 left-2 text-[10px] font-bold text-blue-300 uppercase tracking-widest bg-blue-900/50 px-2 rounded">Process 1</span>
+                    <div class="mt-8 flex flex-col items-center w-full gap-8">
+                        <div class="w-full h-16 border border-purple-500 bg-purple-900/30 rounded flex items-center justify-center relative shadow-inner">
+                            <span class="text-xs text-purple-300 font-mono">Isolated Memory</span>
+                        </div>
+                        <div class="flex gap-4 w-full justify-center">
+                            <div class="w-12 h-12 bg-green-500/20 border-2 border-green-500 rounded-full flex flex-col items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.5)] relative">
+                                <i class="fa-solid fa-gears text-green-400 text-lg animate-spin"></i>
+                                <span class="absolute -bottom-5 text-[9px] text-green-400 font-bold">Thread 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-[60%] flex flex-col justify-between">
+            <div class="glass-panel mb-4 flex-1 border-l-4 border-gray-500 transition-all duration-300 relative group" id="desc-base">
+                <h4 class="text-gray-300 font-bold mb-2 text-lg">The Baseline</h4>
+                <p class="text-[14px] text-gray-400"><strong>Single Process:</strong> One isolated memory space, one execution thread.</p>
+            </div>
+
+            <div class="fragment glass-panel flex-1 border-l-4 border-green-500 opacity-60 transition-all duration-300 cursor-pointer hover:opacity-100 hover:scale-[1.02] bg-green-900/10" id="btn-thread" onclick="showThreads()" data-fragment-index="1">
+                <h4 class="text-green-400 font-bold mb-2 text-lg"><i class="fa-solid fa-code-branch mr-2"></i>Multi-Threading</h4>
+                <p class="text-[13px] text-gray-400 leading-tight"><strong>Shared Memory.</strong> Lightweight, but bound by the GIL and risks race conditions.</p>
+            </div>
+
+            <div class="fragment glass-panel mb-4 flex-1 border-l-4 border-blue-500 opacity-60 transition-all duration-300 cursor-pointer hover:opacity-100 hover:scale-[1.02] bg-blue-900/10" id="btn-process" onclick="showProcesses()" data-fragment-index="2">
+                <h4 class="text-blue-400 font-bold mb-2 text-lg"><i class="fa-solid fa-clone mr-2"></i>Multi-Processing</h4>
+                <p class="text-[13px] text-gray-400 leading-tight"><strong>Duplicated Memory.</strong> True parallelism, safe from races, but high RAM overhead.</p>
+            </div>
+
+            <button class="mt-4 bg-gray-800 hover:bg-gray-700 border border-gray-600 text-gray-300 text-xs py-2 rounded transition shadow-lg w-full" onclick="resetTP()">
+                <i class="fa-solid fa-rotate-right mr-2"></i>Reset to Baseline
+            </button>
+        </div>
     </div>
 </section>
